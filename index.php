@@ -1,5 +1,6 @@
 
 <?php
+include("dbconnect.php");
 session_start();//session starts here
 
 ?>
@@ -40,8 +41,6 @@ session_start();//session starts here
 </html>
 
 <?php
-
-include("dbconnect.php");
 
 if(isset($_POST['Login']))
 {
