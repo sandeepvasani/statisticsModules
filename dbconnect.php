@@ -12,8 +12,6 @@ $dbcon = new mysqli($servername, $username, $password);
 if ($dbcon->connect_error) {
     die("Connection failed: " . $dbcon->connect_error);
 }
-echo "Connected successfully";
-
 mysqli_select_db($dbcon,"db_statistics")
 or die("Could not select examples");
 ?>

@@ -2,6 +2,12 @@
 <?php
 include('dbconnect.php');
 session_start();
+
+if(!$_SESSION['email'])
+{
+    header('Location: index.php');//redirect to login page to secure the welcome page without login access.
+	exit;
+}
 ?>
 <html lang="en">
 <head>
@@ -63,7 +69,7 @@ else
 	{
 		$_SESSION['right_ans']+=1;
 		$_SESSION['ans']='';
-		echo "right";
+	//	echo "right";
 	} 
 	
 }
@@ -72,11 +78,13 @@ else
 	
 }
 
-	if($_SESSION['ques_asked']>=4)
+	if($_SESSION['ques_asked']>4)
 	{
-		session_destroy();
+		//session_destroy();
 		//$_SESSION["ques_asked"]=0;
-		//header('Location: result.php');
+		header('Location: result.php');
+		unset($_SESSION['ques_asked']);
+		
 		//echo $_SESSION['right_ans'];
 		
 		
@@ -87,7 +95,7 @@ else
 
 
 $svar= $_SESSION["ques_asked"];
-echo $svar;
+//echo $svar;
 //echo $_SESSION["numbers"][$svar];
 $ques_query="select * from ques_tbl WHERE qno =".$_SESSION['numbers'][$svar]. " AND ques_type='median'";
     $result=mysqli_query($dbcon,$ques_query);
@@ -121,7 +129,8 @@ $ques_query="select * from ques_tbl WHERE qno =".$_SESSION['numbers'][$svar]. " 
 						<!-- start: User Dropdown -->
 						<li class="dropdown">
 							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-								<i class="halflings-icon white user"></i> Dennis Ji
+								<i class="halflings-icon white user"></i> <?php
+                            echo $_SESSION['email']?>
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
@@ -147,10 +156,16 @@ $ques_query="select * from ques_tbl WHERE qno =".$_SESSION['numbers'][$svar]. " 
 				
 			<!-- start: Main Menu -->
 			<div id="sidebar-left" class="span2">
-				<div class="nav-collapse sidebar-nav">
-
-				</div>
-			</div>
+            <div class="nav-collapse sidebar-nav">
+                <ul class="nav nav-tabs nav-stacked main-menu">
+                    <li><a class="submenu"><i class="icon-file-alt"></i><span class="hidden-tablet"> Question: <?php echo $_SESSION['ques_asked']+1?></span></a></li>
+                    <li>
+                        <a class="submenu"><i class="icon-folder-close-alt"></i><span class="hidden-tablet" id="time"></span></a>
+                     </li>
+                    <li><a class="submenu"><i class="icon-file-alt"></i><span class="hidden-tablet"> Score: <?php echo $_SESSION['right_ans']?></span></a></li>
+                </ul>
+            </div>
+        </div>
 			<!-- end: Main Menu -->
 			
 			<noscript>
@@ -178,8 +193,10 @@ $ques_query="select * from ques_tbl WHERE qno =".$_SESSION['numbers'][$svar]. " 
 						 </table>  
 						 <div class="pagination pagination-centered">
 						  <ul>
-							<li><a href="#">Prev</a></li>
-							<li><input type="submit" name="Next" value="Next"/></li>
+							
+							<li>
+							<button class="btn btn-large btn-info" type="submit" name="Next" value="Next">Next</button>
+							</li>
 						  </ul>
 						</div>     
 			</div>
@@ -220,6 +237,32 @@ $ques_query="select * from ques_tbl WHERE qno =".$_SESSION['numbers'][$svar]. " 
 	</footer>
 	
 	<!-- start: JavaScript-->
+	
+	<script language="javascript" type="text/javascript">
+<!--
+
+sec=0
+min=5
+function display(){ 
+ if (sec<=0){ 
+    sec=59 
+    min-=1 
+ } 
+if (min<=-1){ 
+    sec=0 
+    min+=1
+ 
+ }
+  else 
+    sec-=1 
+    if (sec <= 9)
+    sec="0"+sec
+    document.getElementById("time").innerHTML = "Time: "+min+"."+sec; 
+    setTimeout("display()",1000) 
+} 
+display()
+// -->
+</script>
 
 		<script src="js/jquery-1.9.1.min.js"></script>
 	<script src="js/jquery-migrate-1.0.0.min.js"></script>
