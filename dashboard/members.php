@@ -91,7 +91,7 @@ if(!$_SESSION['email'])
     </div>
 </div>
 <!-- start: Header -->
-<form id="msform" role="form" method="post" action="members.php">
+
 
 <div class="container-fluid-full">
     <div class="row-fluid">
@@ -135,103 +135,77 @@ if(!$_SESSION['email'])
         </noscript>
 
         <!-- start: Content -->
-        <div id="content" class="span10">
+		<div id="content" class="span10">
+			
+			
+			<ul class="breadcrumb">
+				<li>
+					<i class="icon-home"></i>
+					<a href="index.html">Home</a> 
+					<i class="icon-angle-right"></i>
+				</li>
+				<li><a href="#">Tables</a></li>
+			</ul>
 
-
-            <ul class="breadcrumb">
-                <li>
-                    <i class="icon-home"></i>
-                    <a href="index1.html">Home</a>
-                    <i class="icon-angle-right"></i>
-                </li>
-                <li><a href="#">Members</a></li>
-            </ul>
-
-            <div class="row-fluid sortable">
-                <div class="box span12">
-                    <div class="box-header">
-                        <h2><i class="halflings-icon align-justify"></i><span class="break"></span>Members</h2>
-                        <div class="box-icon">
-                            <a href="#" class="btn-setting"><i class="halflings-icon wrench"></i></a>
-                            <a href="#" class="btn-minimize"><i class="halflings-icon chevron-up"></i></a>
-                            <a href="#" class="btn-close"><i class="halflings-icon remove"></i></a>
-                        </div>
-                    </div>
-                    <div class="box-content">
-                        <table class="table table-bordered table-striped table-condensed">
-                            <thead>
-                            <tr>
-                                <th>FirstName</th>
+			<div class="row-fluid sortable">		
+				<div class="box span12">
+					<div class="box-header" data-original-title>
+						<h2><i class="halflings-icon user"></i><span class="break"></span>Members</h2>
+						<div class="box-icon">
+							<a href="#" class="btn-setting"><i class="halflings-icon wrench"></i></a>
+							<a href="#" class="btn-minimize"><i class="halflings-icon chevron-up"></i></a>
+							<a href="#" class="btn-close"><i class="halflings-icon remove"></i></a>
+						</div>
+					</div>
+					<div class="box-content">
+						<table class="table table-striped table-bordered bootstrap-datatable datatable">
+						  <thead>
+							  <tr>
+								<th>FirstName</th>
                                 <th>LastName</th>
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Edit User</th>
-                            </tr>
-                            </thead>
-
-                            <?php
+							  </tr>
+						  </thead>   
+						  <?php
                             include("dbconnect.php");
                             if (isset($_GET["page"])) { $page  = $_GET["page"]; } else { $page=1; };
                             $start_from = ($page-1) * 10;
                             $view_users_query="select * from user_tbl Where user_role = 'Student' LIMIT $start_from, 10";//select query for viewing users.
                             $run=mysqli_query($dbcon,$view_users_query);//here run the sql query.
-
-                            while($row=mysqli_fetch_array($run))//while look to fetch the result and store in a array $row.
+							?>
+                                 
+                            <tbody>
+							<?php
+									while($row=mysqli_fetch_array($run))//while look to fetch the result and store in a array $row.
                             {
                             $user_Id=$row[0];
                             $user_fname=$row[1];
                             $user_lname=$row[2];
                             $user_email=$row[3];
                             $phone=$row[5];
-
-
-
+							
+							echo " <tr>";
+                            echo "<td> <a href=board.php?id=".$user_Id.">".$user_fname."</a> </td>";
+                            echo "<td>".$user_lname."</td>";
+                            echo "<td>".$user_email."</td>";
+                            echo "<td>".$phone."</td>";
+							echo "<td> <a class=\"btn btn-info\" href=board.php?id=".$user_Id."><i class=\"halflings-icon white edit\"></i></a></td>";
+							echo "</tr>";
+							}
                             ?>
-
-                            <tbody>
-                            <tr>
-                                <td><?php echo "<a href='board.php?id=".$user_Id."'>".$user_fname."</a>"  ?></td>
-                                <td><?php echo $user_lname;  ?></td>
-                                <td><?php echo $user_email;  ?></td>
-                                <td><?php echo $phone;  ?></td>
-                            </tr>
-                            <?php } ?>
+							
                             </tbody>
-                        </table>
-                        <div class="pagination pagination-centered">
-                            <ul>
+					  </table>            
+					</div>
+				</div><!--/span-->   
 
-                                <li><a href="#">Prev</a></li>
-
-                                <?php
-                                $sql = "SELECT COUNT(FirstName) FROM user_tbl";
-                                $rs_result = mysqli_query($dbcon, $sql);
-                                $row = mysqli_fetch_row($rs_result);
-                                $total_records = $row[0];
-                                $total_pages = ceil($total_records / 10);
-
-
-                                for ($i=1; $i<=$total_pages; $i++) {
-                                    echo "<li> <a href='members.php?page=".$i."'>".$i."</a> </li>";
-
-
-                                };
-                                ?>
-                              <li><a href="#">Next</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div><!--/span-->
-            </div><!--/row-->
-
-
-        </div><!--/.fluid-container-->
-
-        <!-- end: Content -->
-    </div><!--/#content.span10-->
+	</div><!--/.fluid-container-->
 </div>
-</form><!--/fluid-row-->
-
+        <!--end: Content -->
+</div>
+</div>
 <div class="modal hide fade" id="myModal">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">×</button>
@@ -251,7 +225,7 @@ if(!$_SESSION['email'])
 <footer>
 
     <p>
-        <span style="text-align:left;float:left">&copy; 2013 <a href="http://jiji262.github.io/Bootstrap_Metro_Dashboard/" alt="Bootstrap_Metro_Dashboard">Bootstrap Metro Dashboard</a></span>
+        <span style="text-align:left;float:left">&copy; 2013 <a>Statistics Modules</a></span>
 
     </p>
 
