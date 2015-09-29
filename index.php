@@ -44,10 +44,10 @@ session_start();//session starts here
 
 if(isset($_POST['Login']))
 {
-    $user_email=$_POST['email'];
-    $user_pass=$_POST['pass'];
-
-    $check_user="select * from user_tbl WHERE email = '$user_email' AND upassword = '$user_pass'";
+    $user_email=mysqli_real_escape_string($dbcon, $_POST['email']);
+    $user_pass=mysqli_real_escape_string($dbcon, $_POST['pass']);
+	//$passhash=SHA2(CONCAT('$user_email','$user_pass'),512);
+    $check_user="select * from user_tbl WHERE email = '$user_email' AND upassword = SHA2(CONCAT('$user_email','$user_pass'),512)";
     $result=mysqli_query($dbcon,$check_user);
 	
 	
@@ -58,10 +58,7 @@ if(isset($_POST['Login']))
 		if($row['user_role']=='admin'|| $row['user_role']=='superadmin')
 			header('Location: dashboard/members.php');
 		else
-			header('Location: test.php');
-
-        
-
+			header('Location: test.php');    
     }
     else
     {

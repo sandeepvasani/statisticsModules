@@ -125,14 +125,6 @@ jQuery('.fs-error').html('<span style="color:red;"> Please Enter First Name !</s
 jQuery('.fs-error').show();
 return false;
 }
-else{
-jQuery('.fs-error').hide();
- var serializedReturn = formData();
-
-window.location = "http://localhost/multistepform/success.php";
-	return false;
-	
-	}
 });
 
 

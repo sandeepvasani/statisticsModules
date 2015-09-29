@@ -117,7 +117,7 @@ if(!$_SESSION['email'])
                             <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Member Details</span></a>
                             <ul>
                                 <li><a class="submenu" href="addMember.html"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Member</span></a></li>
-                                <li><a class="submenu" href="members.html"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Members</span></a></li>
+                                <li><a class="submenu" href="members.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Members</span></a></li>
 
                             </ul>
 
