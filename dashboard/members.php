@@ -172,7 +172,7 @@ if(!$_SESSION['email'])
                             include("dbconnect.php");
                             if (isset($_GET["page"])) { $page  = $_GET["page"]; } else { $page=1; };
                             $start_from = ($page-1) * 10;
-                            $view_users_query="select * from user_tbl Where user_role = 'Student' LIMIT $start_from, 10";//select query for viewing users.
+                            $view_users_query="select * from user_tbl Where user_role = 'Student'";//select query for viewing users.
                             $run=mysqli_query($dbcon,$view_users_query);//here run the sql query.
 							?>
                                  
