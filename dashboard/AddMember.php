@@ -16,9 +16,8 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
     <!-- start: Meta -->
     <meta charset="utf-8">
     <title>Statistics Module</title>
-    <meta name="description" content="Bootstrap Metro Dashboard">
-    <meta name="author" content="Dennis Ji">
-    <meta name="keyword" content="Metro, Metro UI, Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+    <meta name="description" content="Statistics Module">
+    <meta name="keyword" content="Dashboard">
     <!-- end: Meta -->
 
     <!-- start: Mobile Specific -->
@@ -94,7 +93,7 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
     </div>
 </div>
 <!-- start: Header -->
-<form id="msform" role="form" method="post" action="members.php">
+<form id="msform" role="form" method="post" action="AddMember.php">
 
     <div class="container-fluid-full">
         <div class="row-fluid">
@@ -103,21 +102,21 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
             <div id="sidebar-left" class="span2">
                 <div class="nav-collapse sidebar-nav">
                     <ul class="nav nav-tabs nav-stacked main-menu">
-                        <li><a href="index1.html"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
+                        <li><a href="dashboard.php"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
                         <li>
                             <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Admin</span></a>
                             <ul>
-                                <li><a class="submenu" href="addAdmin.html"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Admin</span></a></li>
-                                <li><a class="submenu" href="changePassword.html"><i class="icon-file-alt"></i><span class="hidden-tablet"> Change Admin Password</span></a></li>
+                                <li><a class="submenu" href="addAdmin.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Admin</span></a></li>
+                                <li><a class="submenu" href="adminDetails.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Admins</span></a></li>
 
                             </ul>
 
                         </li>
-                        <li><a href="reports.html"><i class="icon-list-alt"></i><span class="hidden-tablet"> Reports</span></a></li>
+                        <li><a href="reports.php"><i class="icon-list-alt"></i><span class="hidden-tablet"> Reports</span></a></li>
                         <li>
-                            <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Member Details</span></a>
+                            <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
                             <ul>
-                                <li><a class="submenu" href="addMember.html"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Member</span></a></li>
+                                <li><a class="submenu" href="AddMember.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Member</span></a></li>
                                 <li><a class="submenu" href="members.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Members</span></a></li>
 
                             </ul>
@@ -144,7 +143,7 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
                 <ul class="breadcrumb">
                     <li>
                         <i class="icon-home"></i>
-                        <a href="index1.html">Home</a>
+                        <a href="daashboard.php">Home</a>
                         <i class="icon-angle-right"></i>
                     </li>
                     <li><a href="#">Member Details</a></li>
@@ -152,6 +151,8 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
 
                 <?php
             require_once('dbconnect.php');
+                if (isset($_GET['id']))
+                {
             $id=$_GET['id'];
             $result3 = mysqli_query($dbcon,"SELECT * FROM user_tbl where PID='$id'");
             while($row3 = mysqli_fetch_array($result3))
@@ -248,7 +249,94 @@ echo "<input class='input-xlarge focused' id='focusedInput' type='text' placehol
 
             </div><!--/row-->
 
+                <?php }
+                else
+                {?>
+                    <div class="row-fluid sortable">
+                        <div class="box span12">
+                            <div class="box-header" data-original-title>
+                                <h2><i class="halflings-icon edit"></i><span class="break"></span>Member Details</h2>
+                                <div class="box-icon">
+                                    <a href="#" class="btn-setting"><i class="halflings-icon wrench"></i></a>
+                                    <a href="#" class="btn-minimize"><i class="halflings-icon chevron-up"></i></a>
+                                    <a href="#" class="btn-close"><i class="halflings-icon remove"></i></a>
+                                </div>
+                            </div>
+                            <div class="box-content">
+                                <form class="form-horizontal">
+                                    <fieldset>
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">First Name</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='First Name'>"
 
+                                                ?>
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">Last Name</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Last Name' >"
+
+                                                ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">Email</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Email'>"
+
+                                                ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">Phone</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Phone' >"
+
+                                                ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">Address</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Address' >"
+
+                                                ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">User Role</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge uneditable-input' id='focusedInput' type='text' placeholder='User Role' >"
+
+                                                ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-actions">
+                                            <button type="submit" class="btn btn-primary">Add Member</button>
+                                            <button class="btn">Cancel</button>
+                                        </div>
+                                    </fieldset>
+                                </form>
+
+                            </div>
+                        </div><!--/span-->
+
+                    </div><!--/row-->
+
+                <?php }?>
         </div><!--/.fluid-container-->
 
         <!-- end: Content -->
@@ -274,7 +362,7 @@ echo "<input class='input-xlarge focused' id='focusedInput' type='text' placehol
 <footer>
 
     <p>
-        <span style="text-align:left;float:left">&copy; 2013 <a href="http://jiji262.github.io/Bootstrap_Metro_Dashboard/" alt="Bootstrap_Metro_Dashboard">Bootstrap Metro Dashboard</a></span>
+        <span style="text-align:left;float:left">&copy; 2015 <a href="" alt="">Statistics Module</a></span>
 
     </p>
 

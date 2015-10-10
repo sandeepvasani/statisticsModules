@@ -13,8 +13,8 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
 <head>
 
     <!-- start: Meta -->
-	<meta charset="utf-8">
-	<title>Statistics Modules Dashboard</title>
+    <meta charset="utf-8">
+    <title>Statistics Modules Dashboard</title>
     <meta name="description" content="Statistics Module">
     <meta name="keyword" content="Dashboard">
     <!-- end: Meta -->
@@ -52,8 +52,8 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
 </head>
 
 <body>
-<form>
 <!-- start: Header -->
+<form>
 <div class="navbar">
     <div class="navbar-inner">
         <div class="container-fluid">
@@ -102,9 +102,9 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
                 <div id="sidebar-left" class="span2">
                     <div class="nav-collapse sidebar-nav">
                         <ul class="nav nav-tabs nav-stacked main-menu">
-                            <li><a href="dashboard.php"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
+                            <li><a href="index1.html"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
 
-                            <li><a href="reports.php"><i class="icon-list-alt"></i><span class="hidden-tablet"> Reports</span></a></li>
+                            <li><a href="reports.html"><i class="icon-list-alt"></i><span class="hidden-tablet"> Reports</span></a></li>
                             <li>
                                 <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
                                 <ul>
@@ -125,17 +125,17 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
                 <div id="sidebar-left" class="span2">
                     <div class="nav-collapse sidebar-nav">
                         <ul class="nav nav-tabs nav-stacked main-menu">
-                            <li><a href="dashboard.php"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
+                            <li><a href="index1.html"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
                             <li>
                                 <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Admin</span></a>
                                 <ul>
                                     <li><a class="submenu" href="addAdmin.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Admin</span></a></li>
-                                    <li><a class="submenu" href="adminDetails.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Admins</span></a></li>
+                                    <li><a class="submenu" href="adminDetails.php"><i class="icon-file-alt"></i><span class="hidden-tablet">View Admins</span></a></li>
 
                                 </ul>
 
                             </li>
-                            <li><a href="reports.php"><i class="icon-list-alt"></i><span class="hidden-tablet"> Reports</span></a></li>
+                            <li><a href="reports.html"><i class="icon-list-alt"></i><span class="hidden-tablet"> Reports</span></a></li>
                             <li>
                                 <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
                                 <ul>
@@ -151,7 +151,6 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
                     </div>
                 </div>
 
-
         <?php endif; ?>
 
         <!-- start: Main Menu -->
@@ -165,78 +164,86 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
         </noscript>
 
         <!-- start: Content -->
-		<div id="content" class="span10">
-			
-			
-			<ul class="breadcrumb">
-				<li>
-					<i class="icon-home"></i>
-					<a href="index.html">Home</a> 
-					<i class="icon-angle-right"></i>
-				</li>
-				<li><a href="#">Members</a></li>
-			</ul>
+        <div id="content" class="span10">
 
-			<div class="row-fluid sortable">		
-				<div class="box span12">
-					<div class="box-header" data-original-title>
-						<h2><i class="halflings-icon user"></i><span class="break"></span>Members</h2>
-						<div class="box-icon">
-							<a href="#" class="btn-setting"><i class="halflings-icon wrench"></i></a>
-							<a href="#" class="btn-minimize"><i class="halflings-icon chevron-up"></i></a>
-							<a href="#" class="btn-close"><i class="halflings-icon remove"></i></a>
-						</div>
-					</div>
-					<div class="box-content">
-						<table class="table table-striped table-bordered bootstrap-datatable datatable">
-						  <thead>
-							  <tr>
-								<th>FirstName</th>
+
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="index.html">Home</a>
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li><a href="#">Tables</a></li>
+            </ul>
+
+            <div class="row-fluid sortable">
+                <div class="box span12">
+                    <div class="box-header" data-original-title>
+                        <h2><i class="halflings-icon user"></i><span class="break"></span>Members</h2>
+                        <div class="box-icon">
+                            <a href="#" class="btn-setting"><i class="halflings-icon wrench"></i></a>
+                            <a href="#" class="btn-minimize"><i class="halflings-icon chevron-up"></i></a>
+                            <a href="#" class="btn-close"><i class="halflings-icon remove"></i></a>
+                        </div>
+                    </div>
+                    <div class="box-content">
+                        <table class="table table-striped table-bordered bootstrap-datatable datatable">
+                            <thead>
+                            <tr>
+                                <th>FirstName</th>
                                 <th>LastName</th>
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Edit User</th>
-							  </tr>
-						  </thead>   
-						  <?php
+                            </tr>
+                            </thead>
+                            <?php
                             include("dbconnect.php");
                             if (isset($_GET["page"])) { $page  = $_GET["page"]; } else { $page=1; };
                             $start_from = ($page-1) * 10;
-                            $view_users_query="select * from user_tbl Where user_role = 'student'";//select query for viewing users.
+                            $view_users_query="select * from user_tbl Where user_role = 'admin'";//select query for viewing users.
                             $run=mysqli_query($dbcon,$view_users_query);//here run the sql query.
 
-                          
-                          ?>
-                                 
-                            <tbody>
-							<?php
-									while($row=mysqli_fetch_array($run))//while look to fetch the result and store in a array $row.
-                            {
-                            $user_Id=$row[0];
-                            $user_fname=$row[1];
-                            $user_lname=$row[2];
-                            $user_email=$row[3];
-                            $phone=$row[5];
-							
-							echo " <tr>";
-                            echo "<td> <a href=AddMember.php?id=" .$user_Id.">".$user_fname."</a> </td>";
-                            echo "<td>".$user_lname."</td>";
-                            echo "<td>".$user_email."</td>";
-                            echo "<td>".$phone."</td>";
-							echo "<td> <a class=\"btn btn-info\" href=board.php?id=".$user_Id."><i class=\"halflings-icon white edit\"></i></a>  <a class=\"btn btn-danger\" href=delete.php?id=".$user_Id." onclick=\"return confirm('Are you sure?')\"><i class=\"halflings-icon white trash\"></i></a></td>";
-							echo "</tr>";
-							}
-                            ?>
-							
-                            </tbody>
-					  </table>            
-					</div>
-				</div><!--/span-->   
+                            if (isset($_GET["id"])) {
+                                $delete_user="DELETE FROM user_tbl Where PID = ".$_GET['id']."";//select query for deleting user.
+                                $result=mysqli_query($dbcon,$delete_user);//here run the sql query.
+                                // if successfully deleted
+                                if($result){
+                                    header( 'Location: adminDetails.php' ) ;
+                                }}
 
-	</div><!--/.fluid-container-->
-</div>
+
+                            ?>
+
+                            <tbody>
+                            <?php
+                            while($row=mysqli_fetch_array($run))//while look to fetch the result and store in a array $row.
+                            {
+                                $user_Id=$row[0];
+                                $user_fname=$row[1];
+                                $user_lname=$row[2];
+                                $user_email=$row[3];
+                                $phone=$row[5];
+
+                                echo "<tr>";
+                                echo "<td> <a href=AddMember.php?id=" .$user_Id.">".$user_fname."</a> </td>";
+                                echo "<td>".$user_lname."</td>";
+                                echo "<td>".$user_email."</td>";
+                                echo "<td>".$phone."</td>";
+                                echo "<td> <a class='btn btn-info' href=addAdmin.php?id=" .$user_Id."><i class=\"halflings-icon white edit\"></i></a>  <a class=\"btn btn-danger\" href=adminDetails.php?id=".$user_Id." onclick=\"return confirm('Are you sure?')\"><i class=\"halflings-icon white edit\"></i></a></td>";
+                                echo "</tr>";
+                            }
+                            ?>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div><!--/span-->
+
+            </div><!--/.fluid-container-->
+        </div>
         <!--end: Content -->
-</div>
+    </div>
 </div>
 <div class="modal hide fade" id="myModal">
     <div class="modal-header">

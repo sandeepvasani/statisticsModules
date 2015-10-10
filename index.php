@@ -55,6 +55,7 @@ if(isset($_POST['Login']))
     {
 		$row = mysqli_fetch_assoc($result);
 		$_SESSION['email']=$user_email;//here session is used and value of $user_email store in $_SESSION.
+        $_SESSION['user_role'] = $row['user_role'];
 		if($row['user_role']=='admin'|| $row['user_role']=='superadmin')
 			header('Location: dashboard/members.php');
 		else

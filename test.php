@@ -71,9 +71,10 @@ else
 		$_SESSION['ans']='';
 	//	echo "right";
 	} 
-	
-}
 	$_SESSION["ques_asked"]+=1;
+	header('Location: test.php');
+}
+	
 	
 	
 }
