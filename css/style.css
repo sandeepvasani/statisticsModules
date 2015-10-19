@@ -701,6 +701,23 @@ ul.messages li .message {
 	position: relative;
 }
 
+#content_choose_test {
+	
+	
+	min-height: 100%;
+	padding: 15% 10px 50px 5%;
+	position: relative;
+}
+
+#content_choose_diff {
+	
+	
+	filter: none;
+	min-height: 100%;
+	padding: 20% 0px 50px 30%;
+	position: relative;
+}
+
 .breadcrumb {
 	margin: -28px -28px 28px -28px;
 	line-height: 34px;

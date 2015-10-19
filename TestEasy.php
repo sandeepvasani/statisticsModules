@@ -1,13 +1,8 @@
 <!DOCTYPE html>
+
 <?php
 include('dbconnect.php');
-session_start();
 
-if(!$_SESSION['email'])
-{
-    header('Location: index.php');//redirect to login page to secure the welcome page without login access.
-	exit;
-}
 ?>
 <html lang="en">
 <head>
@@ -24,6 +19,7 @@ if(!$_SESSION['email'])
 	
 	<!-- start: CSS -->
 	<link id="bootstrap-style" href="css/bootstrap.min.css" rel="stylesheet">
+	<link id="dragtest-style" href="css/style_test.css" rel="stylesheet">
 	<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
 	<link id="base-style" href="css/style.css" rel="stylesheet">
 	<link id="base-style-responsive" href="css/style-responsive.css" rel="stylesheet">
@@ -100,7 +96,6 @@ $svar= $_SESSION["ques_asked"];
 $ques_query="select * from ques_tbl WHERE qno =".$_SESSION['numbers'][$svar]. " AND ques_type='median'";
     $result=mysqli_query($dbcon,$ques_query);
 	
-	
     if(mysqli_num_rows($result))
     {
 		$row = mysqli_fetch_assoc($result);
@@ -129,8 +124,7 @@ $ques_query="select * from ques_tbl WHERE qno =".$_SESSION['numbers'][$svar]. " 
 						<!-- start: User Dropdown -->
 						<li class="dropdown">
 							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-								<i class="halflings-icon white user"></i> <?php
-                            echo $_SESSION['email']?>
+								<i class="halflings-icon white user"></i> 
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
@@ -151,66 +145,64 @@ $ques_query="select * from ques_tbl WHERE qno =".$_SESSION['numbers'][$svar]. " 
 	</div>
 	<!-- start: Header -->
 	
-		<div class="container-fluid-full">
-		<div class="row-fluid">
+
+			   
+	<div class="row-fluid">
 				
 			<!-- start: Main Menu -->
-			<div id="sidebar-left" class="span2">
-            <div class="nav-collapse sidebar-nav">
-                <ul class="nav nav-tabs nav-stacked main-menu">
-                    <li><a class="submenu"><i class="icon-file-alt"></i><span class="hidden-tablet"> Question: <?php echo $_SESSION['ques_asked']+1?></span></a></li>
-                    <li>
-                        <a class="submenu"><i class="icon-folder-close-alt"></i><span class="hidden-tablet" id="time"></span></a>
-                     </li>
-                    <li><a class="submenu"><i class="icon-file-alt"></i><span class="hidden-tablet"> Score: <?php echo $_SESSION['right_ans']?></span></a></li>
-                </ul>
-            </div>
-        </div>
+			
 			<!-- end: Main Menu -->
 			
 			<noscript>
-				<div class="alert alert-block span10">
-					<h4 class="alert-heading">Warning!</h4>
-					<p>You need to have <a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a> enabled to use this site.</p>
-				</div>
+				&lt;div class="alert alert-block span10"&gt;
+					&lt;h4 class="alert-heading"&gt;Warning!&lt;/h4&gt;
+					&lt;p&gt;You need to have &lt;a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank"&gt;JavaScript&lt;/a&gt; enabled to use this site.&lt;/p&gt;
+				&lt;/div&gt;
 			</noscript>
 			
 			<!-- start: Content -->
-			<form method="post" action="test.php">
-			<div id="content" class="span10">
+			<hr>
+			<div class="span11" style="min-height: 699px;">
 			
-						<table class="table table-bordered table-striped table-condensed">
-							  <tbody role="alert" aria-live="polite" aria-relevant="all">
-					  <tr>
-								
-								<td> <?php echo $row['question']?></td>
-						</tr>
-						<tr>
-								
-								<td> <input type="text" name="answer" id="answer" placeholder="Enter Answer"/></td>
-						</tr>
-						</tbody>
-						 </table>  
-						 <div class="pagination pagination-centered">
+					
+			
+			<div class="row-fluid">	
+			
+				<div id="cardPile"> 
+				<?php 
+				
+				$numbers=explode(",",$row['question']);
+				
+				for($i=0;$i<count($numbers);$i++)
+				{
+					echo "<div id=\"card".$numbers[$i]."\">".$numbers[$i]."</div>";
+					
+				}
+				?>
+				
+				</div>
+				<hr>
+				
+				<div class="pagination pagination-centered">
 						  <ul>
 							
+							<li>
+							<input type="text" placeholder="Enter Answer" >
+							</li>
+							<hr>
 							<li>
 							<button class="btn btn-large btn-info" type="submit" name="Next" value="Next">Next</button>
 							</li>
 						  </ul>
-						</div>     
-			</div>
-			</form>
-				</div><!--/span-->
+						</div>  
+								
 			</div><!--/row-->
-    
 
+			
+
+			
 	</div><!--/.fluid-container-->
-	
-			<!-- end: Content -->
-		</div><!--/#content.span10-->
-		</div><!--/fluid-row-->
-		
+	</div>	
 	<div class="modal hide fade" id="myModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
@@ -318,6 +310,7 @@ display()
 		<script src="js/retina.js"></script>
 
 		<script src="js/custom.js"></script>
+		<script src="js/dragnumber.js"></script>
 	<!-- end: JavaScript-->
 	
 </body>

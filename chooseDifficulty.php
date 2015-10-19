@@ -1,20 +1,11 @@
 <!DOCTYPE html>
-<?php
-include('dbconnect.php');
-session_start();
 
-if(!$_SESSION['email'])
-{
-    header('Location: index.php');//redirect to login page to secure the welcome page without login access.
-	exit;
-}
-?>
 <html lang="en">
 <head>
 	
 	<!-- start: Meta -->
 	<meta charset="utf-8">
-	<title>Statistics Modules</title>
+	<title>Statistics Modules Dashboard</title>
 	<meta name="description" content="Statistic Modules Dashboard">
 	<!-- end: Meta -->
 	
@@ -46,68 +37,7 @@ if(!$_SESSION['email'])
 	<!-- end: Favicon -->		
 </head>
 
-<?php
 
-if(!isset($_SESSION["ques_asked"]) )
-{
-	
-	$_SESSION["right_ans"]=0;
-	$_SESSION["ques_asked"]=0;
-	$_SESSION['ans']='';
-	
-	$numbers=range(1,5);
-	shuffle($numbers);
-	$numbers=array_slice($numbers,0,5);
-	$_SESSION["numbers"]=$numbers;
-//print_r($numbers);
-}
-else
-{
-	if(isset($_POST['Next']))
-{
-	 if($_SESSION['ans']==$_POST['answer'])
-	{
-		$_SESSION['right_ans']+=1;
-		$_SESSION['ans']='';
-	//	echo "right";
-	} 
-	$_SESSION["ques_asked"]+=1;
-	header('Location: test.php');
-}
-	
-	
-	
-}
-
-	if($_SESSION['ques_asked']>4)
-	{
-		//session_destroy();
-		//$_SESSION["ques_asked"]=0;
-		header('Location: result.php');
-		unset($_SESSION['ques_asked']);
-		
-		//echo $_SESSION['right_ans'];
-				
-		//exit;
-		
-	
-	}
-
-
-$svar= $_SESSION["ques_asked"];
-//echo $svar;
-//echo $_SESSION["numbers"][$svar];
-$ques_query="select * from ques_tbl WHERE qno =".$_SESSION['numbers'][$svar]. " AND ques_type='median'";
-    $result=mysqli_query($dbcon,$ques_query);
-	
-	
-    if(mysqli_num_rows($result))
-    {
-		$row = mysqli_fetch_assoc($result);
-		$_SESSION['ans']=$row['rightans'];
-	
-	}
-?>
 
 <body>
 		<!-- start: Header -->
@@ -130,7 +60,7 @@ $ques_query="select * from ques_tbl WHERE qno =".$_SESSION['numbers'][$svar]. " 
 						<li class="dropdown">
 							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 								<i class="halflings-icon white user"></i> <?php
-                            echo $_SESSION['email']?>
+                            echo "your email"?>
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
@@ -151,65 +81,55 @@ $ques_query="select * from ques_tbl WHERE qno =".$_SESSION['numbers'][$svar]. " 
 	</div>
 	<!-- start: Header -->
 	
-		<div class="container-fluid-full">
+		
 		<div class="row-fluid">
 				
 			<!-- start: Main Menu -->
-			<div id="sidebar-left" class="span2">
-            <div class="nav-collapse sidebar-nav">
-                <ul class="nav nav-tabs nav-stacked main-menu">
-                    <li><a class="submenu"><i class="icon-file-alt"></i><span class="hidden-tablet"> Question: <?php echo $_SESSION['ques_asked']+1?></span></a></li>
-                    <li>
-                        <a class="submenu"><i class="icon-folder-close-alt"></i><span class="hidden-tablet" id="time"></span></a>
-                     </li>
-                    <li><a class="submenu"><i class="icon-file-alt"></i><span class="hidden-tablet"> Score: <?php echo $_SESSION['right_ans']?></span></a></li>
-                </ul>
-            </div>
-        </div>
+			
 			<!-- end: Main Menu -->
 			
 			<noscript>
-				<div class="alert alert-block span10">
-					<h4 class="alert-heading">Warning!</h4>
-					<p>You need to have <a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a> enabled to use this site.</p>
-				</div>
+				&lt;div class="alert alert-block span10"&gt;
+					&lt;h4 class="alert-heading"&gt;Warning!&lt;/h4&gt;
+					&lt;p&gt;You need to have &lt;a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank"&gt;JavaScript&lt;/a&gt; enabled to use this site.&lt;/p&gt;
+				&lt;/div&gt;
 			</noscript>
 			
 			<!-- start: Content -->
-			<form method="post" action="test.php">
-			<div id="content" class="span10">
+			<div id="content_choose_diff" class="span11" style="min-height: 699px;">
 			
-						<table class="table table-bordered table-striped table-condensed">
-							  <tbody role="alert" aria-live="polite" aria-relevant="all">
-					  <tr>
+					
+			
+			<div class="row-fluid">	
+			
+				<div class="span3 statbox purple" onTablet="span6" onDesktop="span3">
+					
+					<div class="number">Easy</div>
+					
+					<div class="footer">
+						<a href="#"> Choose</a>
+					</div>	
+				</div>
+				
+				<div class="span3 statbox green" onTablet="span6" onDesktop="span3">
+				
+					<div class="number">Difficult</div>
+					
+					<div class="footer">
+						<a href="#"> Choose</a>
+					</div>	
+				</div>
 								
-								<td> <?php echo $row['question']?></td>
-						</tr>
-						<tr>
-								
-								<td> <input type="text" name="answer" id="answer" placeholder="Enter Answer"/></td>
-						</tr>
-						</tbody>
-						 </table>  
-						 <div class="pagination pagination-centered">
-						  <ul>
-							
-							<li>
-							<button class="btn btn-large btn-info" type="submit" name="Next" value="Next">Next</button>
-							</li>
-						  </ul>
-						</div>     
-			</div>
-			</form>
-				</div><!--/span-->
 			</div><!--/row-->
-    
 
+			
+
+			
 	</div><!--/.fluid-container-->
+	</div>
 	
 			<!-- end: Content -->
-		</div><!--/#content.span10-->
-		</div><!--/fluid-row-->
+		
 		
 	<div class="modal hide fade" id="myModal">
 		<div class="modal-header">
@@ -238,31 +158,7 @@ $ques_query="select * from ques_tbl WHERE qno =".$_SESSION['numbers'][$svar]. " 
 	
 	<!-- start: JavaScript-->
 	
-	<script language="javascript" type="text/javascript">
-<!--
-
-sec=0
-min=5
-function display(){ 
- if (sec<=0){ 
-    sec=59 
-    min-=1 
- } 
-if (min<=-1){ 
-    sec=0 
-    min+=1
- 
- }
-  else 
-    sec-=1 
-    if (sec <= 9)
-    sec="0"+sec
-    document.getElementById("time").innerHTML = "Time: "+min+"."+sec; 
-    setTimeout("display()",1000) 
-} 
-display()
-// -->
-</script>
+	
 
 		<script src="js/jquery-1.9.1.min.js"></script>
 	<script src="js/jquery-migrate-1.0.0.min.js"></script>
