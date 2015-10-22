@@ -120,7 +120,7 @@ if(isset($_POST['Register']))
 	echo "ahsfjsak";
 //insert the user into the database.
 
-    $insert_user="insert into user_tbl (FirstName,LastName,email,upassword,phone_number,user_role,address) VALUES ('$user_fname','$user_lname','$user_email',SHA2(CONCAT('$user_email','$user_pass'),512),'$phone','Student','$user_address')";
+    $insert_user="insert into user_tbl (FirstName,LastName,username,email,upassword,phone_number,user_role,address) VALUES ('$user_fname','$user_lname','$user_email','$user_email',SHA2(CONCAT('$user_email','$user_pass'),512),'$phone','Student','$user_address')";
     if(mysqli_query($dbcon,$insert_user))
     {
        header('Location: index.php');  

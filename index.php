@@ -32,7 +32,7 @@ session_start();//session starts here
         <input type="email" name="email" id="email" placeholder="Email" />
         <input type="password" name="pass"  id="pass" placeholder="Password" />
         <input type="submit" name="Login" class="next action-button" value="Login" />
-        <br/><a href="signup.php" style="font-size:small"> Register as a new user </a><br /> <a href="" style="font-size:small"> Forgot Password</a>
+        <br/><a href="signup.php" style="font-size:small"> Register as a new user </a><br /> <a href="forgetPassword.php" style="font-size:small"> Forgot Password</a>
     </fieldset>
 
 </form>
@@ -56,6 +56,7 @@ if(isset($_POST['Login']))
 		$row = mysqli_fetch_assoc($result);
 		$_SESSION['email']=$user_email;//here session is used and value of $user_email store in $_SESSION.
         $_SESSION['user_role'] = $row['user_role'];
+        $_SESSION['username'] = $row['username'];
 		if($row['user_role']=='admin'|| $row['user_role']=='superadmin')
 			header('Location: dashboard/members.php');
 		else
@@ -66,4 +67,7 @@ if(isset($_POST['Login']))
         echo "Invalid Login Credentials.";
     }
 }
+
+
+
 ?>

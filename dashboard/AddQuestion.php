@@ -1,17 +1,12 @@
 <?php
 session_start();
 
+if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_role']!='superadmin'))
+{
+    header('Location: ../index.php');//redirect to login page to secure the welcome page without login access.
+    exit;
+}
 
-if(!(isset($_SESSION['email'])))
-{
-    header('Location: ../index.php');//redirect to login page to secure the welcome page without login access.
-    exit;
-}
-if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
-{
-    header('Location: ../index.php');//redirect to login page to secure the welcome page without login access.
-    exit;
-}
 
 ?>
 
@@ -98,7 +93,7 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
     </div>
 </div>
 <!-- start: Header -->
-<form id="msform" role="form" method="post" action="addAdmin.php">
+<form id="msform" role="form" method="post" action="AddQuestion.php" enctype="multipart/form-data">
 
     <div class="container-fluid-full">
         <div class="row-fluid">
@@ -159,21 +154,24 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
                 if (isset($_GET['id']))
                 {
                     $id=$_GET['id'];
-                    $result3 = mysqli_query($dbcon,"SELECT * FROM user_tbl where PID='$id'");
+                    $result3 = mysqli_query($dbcon,"SELECT * FROM questions where QuestionID='$id'");
                     while($row3 = mysqli_fetch_array($result3))
                     {
-                        $fname=$row3['FirstName'];
-                        $lname=$row3['LastName'];
-                        $email=$row3['email'];
-                        $phone=$row3['phone_number'];
-                        $address=$row3['address'];
-                        $role=$row3['user_role'];
+                        $Question_Desc=$row3['Question_Desc'];
+                        $Question_Image=$row3['Question_Image'];
+                        $Option1=$row3['Option1'];
+                        $Option2=$row3['Option2'];
+                        $Option3=$row3['Option3'];
+                        $Option4=$row3['Option4'];
+                        $Answer=$row3['Answer'];
+                        $Question_Category=$row3['Question_Category'];
+                        $Question_Level=$row3['Question_Level'];
                     }
                     ?>
                     <div class="row-fluid sortable">
                         <div class="box span12">
                             <div class="box-header" data-original-title>
-                                <h2><i class="halflings-icon edit"></i><span class="break"></span>Admin Details</h2>
+                                <h2><i class="halflings-icon edit"></i><span class="break"></span>Question Details</h2>
                                 <div class="box-icon">
                                     <a href="#" class="btn-setting"><i class="halflings-icon wrench"></i></a>
                                     <a href="#" class="btn-minimize"><i class="halflings-icon chevron-up"></i></a>
@@ -184,66 +182,97 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
                                 <form class="form-horizontal">
                                     <fieldset>
                                         <div class="control-group">
-                                            <label class="control-label" for="focusedInput">First Name</label>
+                                            <label class="control-label" for="focusedInput">Question Description</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' name='fname_u' type='text' placeholder='First Name' value='$fname'>"
+                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='First Name' value='$Question_Desc'>"
 
                                                 ?>
                                             </div>
                                         </div>
                                         <div class="control-group">
-                                            <label class="control-label" for="focusedInput">Last Name</label>
+                                            <label class="control-label" for="focusedInput">Question Image</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' name='lname_u' type='text' placeholder='Last Name' value='$lname'>"
-
+                                             //   echo "<img src=\"data:image,'.base64_encode( $Question_Image ).'\"/>";
+                                            //    header("Content-type: image/jpeg");
+                                                echo '<img height="150" width="150" src="data:image;base64,'.$Question_Image.' "> ';
+                                              //      echo ".$Question_Image.";
+                                         //       echo "<img height='100' width='100' src='data:image;base64,'.$Question_Image.' '> "
                                                 ?>
                                             </div>
                                         </div>
 
                                         <div class="control-group">
-                                            <label class="control-label" for="focusedInput">Email</label>
+                                            <label class="control-label" for="focusedInput">Option1</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' name='email_u' type='text' placeholder='Email' value='$email'>"
-
-                                                ?>
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group">
-                                            <label class="control-label" for="focusedInput">Phone</label>
-                                            <div class="controls">
-                                                <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' name='phone_u' type='text' placeholder='Phone' value='$phone'>"
+                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Email' value='$Option1'>"
 
                                                 ?>
                                             </div>
                                         </div>
 
                                         <div class="control-group">
-                                            <label class="control-label" for="focusedInput">Address</label>
+                                            <label class="control-label" for="focusedInput">Option2</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' name='address_u' type='text' placeholder='Address' value='$address'>"
+                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Email' value='$Option2'>"
+
+                                                ?>
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">Option3</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Email' value='$Option3'>"
+
+                                                ?>
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">Option4</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Email' value='$Option4'>"
 
                                                 ?>
                                             </div>
                                         </div>
 
                                         <div class="control-group">
-                                            <label class="control-label" for="focusedInput">User Role</label>
+                                            <label class="control-label" for="focusedInput">Answer</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge uneditable-input' id='focusedInput' type='text' placeholder='User Role' value='$role'>"
+                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Phone' value='$Answer'>"
+
+                                                ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">Question Category</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Address' value='$Question_Category'>"
+
+                                                ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">Question Level</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge uneditable-input' id='focusedInput' type='text' placeholder='User Role' value='$Question_Level'>"
 
                                                 ?>
                                             </div>
                                         </div>
 
                                         <div class="form-actions">
-                                            <input type="submit" name="Update_Admin" class="btn btn-primary" value="Update Admin"/>
+                                            <button type="submit" class="btn btn-primary">Save changes</button>
                                             <button class="btn">Cancel</button>
                                         </div>
                                     </fieldset>
@@ -254,19 +283,13 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
 
                     </div><!--/row-->
 
-
-
-
-
-                <?php
-
-                }
+                <?php }
                 else
                 {?>
                     <div class="row-fluid sortable">
                         <div class="box span12">
                             <div class="box-header" data-original-title>
-                                <h2><i class="halflings-icon edit"></i><span class="break"></span>Admin Details</h2>
+                                <h2><i class="halflings-icon edit"></i><span class="break"></span>Add Question</h2>
                                 <div class="box-icon">
                                     <a href="#" class="btn-setting"><i class="halflings-icon wrench"></i></a>
                                     <a href="#" class="btn-minimize"><i class="halflings-icon chevron-up"></i></a>
@@ -275,71 +298,100 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
                             </div>
                             <div class="box-content">
                                 <form class="form-horizontal">
+
                                     <fieldset>
                                         <div class="control-group">
-                                            <label class="control-label" for="focusedInput">First Name</label>
+                                            <label class="control-label" for="focusedInput">Question Description</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' name='fname' type='text' placeholder='First Name'>"
+                                                echo "<input class='input-xlarge focused' id='focusedInput' name='Question_Desc' type='text' placeholder='First Name' >"
 
                                                 ?>
                                             </div>
                                         </div>
                                         <div class="control-group">
-                                            <label class="control-label" for="focusedInput">Last Name</label>
+                                            <label class="control-label" for="focusedInput">Question Image</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' name='lname' type='text' placeholder='Last Name' >"
-
+                                                echo "<input type='file' name='image' />"
                                                 ?>
                                             </div>
                                         </div>
 
                                         <div class="control-group">
-                                            <label class="control-label" for="focusedInput">Email</label>
+                                            <label class="control-label" for="focusedInput">Option1</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' name='email' type='text' placeholder='Email'>"
-
-                                                ?>
-                                            </div>
-                                        </div>
-
-                                        <div class="control-group">
-                                            <label class="control-label" for="focusedInput">Phone</label>
-                                            <div class="controls">
-                                                <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' name='phone' type='text' placeholder='Phone' >"
+                                                echo "<input class='input-xlarge focused' id='focusedInput' name='Option1' type='text' placeholder='Email'>"
 
                                                 ?>
                                             </div>
                                         </div>
 
                                         <div class="control-group">
-                                            <label class="control-label" for="focusedInput">Address</label>
+                                            <label class="control-label" for="focusedInput">Option2</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' name='address' type='text' placeholder='Address' >"
+                                                echo "<input class='input-xlarge focused' id='focusedInput' name='Option2' type='text' placeholder='Email'>"
+
+                                                ?>
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">Option3</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge focused' id='focusedInput' name='Option3' type='text' placeholder='Email' >"
+
+                                                ?>
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">Option4</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge focused' id='focusedInput' name='Option4' type='text' placeholder='Email' >"
 
                                                 ?>
                                             </div>
                                         </div>
 
                                         <div class="control-group">
-                                            <label class="control-label" for="focusedInput">Password</label>
+                                            <label class="control-label" for="focusedInput">Answer</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge uneditable-input' id='focusedInput' name='pass' type='text' placeholder='Password' >"
+                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' name='Answer' placeholder='Phone'>"
+
+                                                ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">Question Category</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' name='Question_Category' placeholder='Address' >"
+
+                                                ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">Question Level</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge uneditable-input' id='focusedInput' name='Question_Level' type='text' placeholder='User Role' >"
 
                                                 ?>
                                             </div>
                                         </div>
 
                                         <div class="form-actions">
-                                            <input type="submit" name="Add_Member" class="btn btn-primary" value="Add Admin"/>
-                                            <a href="adminDetails.php"><button type="button" class="btn">Cancel</button></a>
+                                            <input type="submit" name="Add_Question" class="btn btn-primary" value="Add Question"/>
+                                            <button class="btn">Cancel</button>
                                         </div>
                                     </fieldset>
+
                                 </form>
 
                             </div>
@@ -353,103 +405,39 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
             <?php
             include("dbconnect.php");
 
-            if(isset($_POST['Add_Member']))
+            if(isset($_POST['Add_Question']))
             {
+                $Question_Desc=mysqli_real_escape_string($dbcon, $_POST['Question_Desc']);//here getting result from the post array after submitting the form.
+                $Option1=mysqli_real_escape_string($dbcon, $_POST['Option1']);
+                $Option2=mysqli_real_escape_string($dbcon, $_POST['Option2']);
 
-                $user_fname=mysqli_real_escape_string($dbcon, $_POST['fname']);//here getting result from the post array after submitting the form.
-                $user_lname=mysqli_real_escape_string($dbcon, $_POST['lname']);
-                $user_address=mysqli_real_escape_string($dbcon, $_POST['address']);
-                $phone=mysqli_real_escape_string($dbcon, $_POST['phone']);
+                $Option3=mysqli_real_escape_string($dbcon, $_POST['Option3']);
+                $Option4=mysqli_real_escape_string($dbcon, $_POST['Option4']);
+                $Answer=mysqli_real_escape_string($dbcon, $_POST['Answer']);
 
-                $user_pass=mysqli_real_escape_string($dbcon, $_POST['pass']);//same
-                $user_email=mysqli_real_escape_string($dbcon, $_POST['email']);//same
+                $Question_Category=mysqli_real_escape_string($dbcon, $_POST['Question_Category']);//same
+                $Question_Level=mysqli_real_escape_string($dbcon, $_POST['Question_Level']);//same
+
+                $image=mysqli_real_escape_string($dbcon, $_FILES['image']['tmp_name']);//same
 
 
-                if($user_fname=='' || $user_lname=='' || $user_address=='')
+           //     $image= addslashes($_FILES['image']['tmp_name']);
+                if(getimagesize($_FILES['image']['tmp_name']) == FALSE)
                 {
-                    //javascript use for input checking
-                    echo"<script>alert('Please enter all the personal details')</script>";
-                    echo"1";
-                    exit();//this use if first is not work then other will not show
+                    echo "Please select an image.";
                 }
+                else{
 
-                if($user_pass=='')
-                {
-                    echo"<script>alert('Please enter the password')</script>";
-                    echo"2";
-                    exit();
+                    $image= file_get_contents($image);
+                    $image= base64_encode($image);
+                    $insert_question="insert into questions (Question_Desc,Question_Image,Option1,Option2,Option3,Option4,Answer, Question_Category,Question_Level) VALUES ('$Question_Desc','$image','$Option1','$Option2','$Option3','$Option4','$Answer','$Question_Category','$Question_Level')";
+                    if(mysqli_query($dbcon,$insert_question))
+                    {
+                        header('Location: members.php');
+                    }
                 }
-
-                if($user_email=='')
-                {
-                    echo"<script>alert('Please enter the email')</script>";
-                    echo"3";
-                    exit();
-                }
-//here query check weather if user already registered so can't register again.
-                $check_email_query="select * from user_tbl WHERE email='$user_email'";
-                $run_query=mysqli_query($dbcon,$check_email_query);
-
-                if(mysqli_num_rows($run_query)>0)
-                {
-                    echo "<script>alert('Email $user_email is already exist in our database, Please try another one!')</script>";
-                    exit();
-                }
-                echo "ahsfjsak";
-//insert the user into the database.
-
-                $insert_user="insert into user_tbl (FirstName,LastName,email,upassword,phone_number,user_role,address) VALUES ('$user_fname','$user_lname','$user_email',SHA2(CONCAT('$user_email','$user_pass'),512),'$phone','admin','$user_address')";
-                if(mysqli_query($dbcon,$insert_user))
-                {
-                    header('Location: adminDetails.php');
-                }
-
-
 
             }
-
-            if(isset($_POST['Update_Admin']))
-            {
-
-                $user_fname=mysqli_real_escape_string($dbcon, $_POST['fname_u']);//here getting result from the post array after submitting the form.
-                $user_lname=mysqli_real_escape_string($dbcon, $_POST['lname_u']);
-                $user_address=mysqli_real_escape_string($dbcon, $_POST['address_u']);
-                $phone=mysqli_real_escape_string($dbcon, $_POST['phone_u']);
-
-                $user_email=mysqli_real_escape_string($dbcon, $_POST['email_u']);//same
-
-
-                if($user_fname=='' || $user_lname=='' || $user_address=='')
-                {
-                    //javascript use for input checking
-                    echo"<script>alert('Please enter all the personal details')</script>";
-                    echo"1";
-                    exit();//this use if first is not work then other will not show
-                }
-
-
-
-                if($user_email=='')
-                {
-                    echo"<script>alert('Please enter the email')</script>";
-                    echo"3";
-                    exit();
-                }
-
-                $insert_user="Update user_tbl set FirstName= '$user_fname', LastName = '$user_lname', email = '$user_email', phone_number = '$phone', address = '$user_address' WHERE PID = '$id'";
-
-               echo '$insert_user';
-
-                if(mysqli_query($dbcon,$insert_user))
-                {
-                    header('Location: adminDetails.php');
-                }
-
-
-
-            }
-
-
 
             ?>
             <!-- end: Content -->

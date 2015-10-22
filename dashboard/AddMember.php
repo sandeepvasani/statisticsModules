@@ -107,7 +107,7 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
                             <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Admin</span></a>
                             <ul>
                                 <li><a class="submenu" href="addAdmin.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Admin</span></a></li>
-                                <li><a class="submenu" href="adminDetails.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Admins</span></a></li>
+                                <li><a class="submenu" href="adminDetails.php"><i class="icon-file-alt"></i><span class="hidden-tablet">View Admins</span></a></li>
 
                             </ul>
 
@@ -326,7 +326,7 @@ echo "<input class='input-xlarge focused' id='focusedInput' type='text' placehol
 
                                         <div class="form-actions">
                                             <button type="submit" class="btn btn-primary">Add Member</button>
-                                            <button class="btn">Cancel</button>
+                                            <a href="members.php"><button type="button" class="btn">Cancel</button></a>
                                         </div>
                                     </fieldset>
                                 </form>

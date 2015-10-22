@@ -222,15 +222,15 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
                                 $user_Id=$row[0];
                                 $user_fname=$row[1];
                                 $user_lname=$row[2];
-                                $user_email=$row[3];
-                                $phone=$row[5];
+                                $user_email=$row[4];
+                                $phone=$row[6];
 
                                 echo "<tr>";
                                 echo "<td> <a href=AddMember.php?id=" .$user_Id.">".$user_fname."</a> </td>";
                                 echo "<td>".$user_lname."</td>";
                                 echo "<td>".$user_email."</td>";
                                 echo "<td>".$phone."</td>";
-                                echo "<td> <a class='btn btn-info' href=addAdmin.php?id=" .$user_Id."><i class=\"halflings-icon white edit\"></i></a>  <a class=\"btn btn-danger\" href=adminDetails.php?id=".$user_Id." onclick=\"return confirm('Are you sure?')\"><i class=\"halflings-icon white edit\"></i></a></td>";
+                                echo "<td> <a class='btn btn-info' href=addAdmin.php?id=" .$user_Id."><i class=\"halflings-icon white edit\"></i></a>  <a class=\"btn btn-danger\" href=adminDetails.php?id=".$user_Id." onclick=\"return confirm('Are you sure?')\"><i class=\"halflings-icon white trash\"></i></a></td>";
                                 echo "</tr>";
                             }
                             ?>
