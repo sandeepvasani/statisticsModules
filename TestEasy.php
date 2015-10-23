@@ -93,7 +93,7 @@ else
 $svar= $_SESSION["ques_asked"];
 //echo $svar;
 //echo $_SESSION["numbers"][$svar];
-$ques_query="select * from ques_tbl WHERE qno =".$_SESSION['numbers'][$svar]. " AND ques_type='median'";
+$ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$svar]. " AND Question_Category='median'";
     $result=mysqli_query($dbcon,$ques_query);
 	
     if(mysqli_num_rows($result))

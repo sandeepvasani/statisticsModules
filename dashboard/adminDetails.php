@@ -207,7 +207,7 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
                             if (isset($_GET["id"])) {
                                 $delete_user="DELETE FROM user_tbl Where PID = ".$_GET['id']."";//select query for deleting user.
                                 $result=mysqli_query($dbcon,$delete_user);//here run the sql query.
-                                // if successfully deleted
+                                // if successfully deleteder
                                 if($result){
                                     header( 'Location: adminDetails.php' ) ;
                                 }}
@@ -226,7 +226,7 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
                                 $phone=$row[6];
 
                                 echo "<tr>";
-                                echo "<td> <a href=AddMember.php?id=" .$user_Id.">".$user_fname."</a> </td>";
+                                echo "<td> <a href=addAdmin.php?id=" .$user_Id.">".$user_fname."</a> </td>";
                                 echo "<td>".$user_lname."</td>";
                                 echo "<td>".$user_email."</td>";
                                 echo "<td>".$phone."</td>";

@@ -15,6 +15,107 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
 
 ?>
 
+            <?php
+            include("dbconnect.php");
+
+            if(isset($_POST['Add_Member']))
+            {
+				
+
+                $user_fname=mysqli_real_escape_string($dbcon, $_POST['fname']);//here getting result from the post array after submitting the form.
+                $user_lname=mysqli_real_escape_string($dbcon, $_POST['lname']);
+                $user_address=mysqli_real_escape_string($dbcon, $_POST['address']);
+                $phone=mysqli_real_escape_string($dbcon, $_POST['phone']);
+
+                $user_pass=mysqli_real_escape_string($dbcon, $_POST['pass']);//same
+                $user_email=mysqli_real_escape_string($dbcon, $_POST['email']);//same
+
+
+                if($user_fname=='' || $user_lname=='' || $user_address=='')
+                {
+                    //javascript use for input checking
+                    echo"<script>alert('Please enter all the personal details')</script>";
+                    echo"1";
+                    exit();//this use if first is not work then other will not show
+                }
+
+                if($user_pass=='')
+                {
+                    echo"<script>alert('Please enter the password')</script>";
+                    echo"2";
+                    exit();
+                }
+
+                if($user_email=='')
+                {
+                    echo"<script>alert('Please enter the email')</script>";
+                    echo"3";
+                    exit();
+                }
+//here query check weather if user already registered so can't register again.
+                $check_email_query="select * from user_tbl WHERE email='$user_email'";
+                $run_query=mysqli_query($dbcon,$check_email_query);
+
+                if(mysqli_num_rows($run_query)>0)
+                {
+                    echo "<script>alert('Email $user_email is already exist in our database, Please try another one!')</script>";
+                    exit();
+                }
+                echo "ahsfjsak";
+//insert the user into the database.
+
+                $insert_user="insert into user_tbl (FirstName,LastName,email,upassword,phone_number,user_role,address) VALUES ('$user_fname','$user_lname','$user_email',SHA2(CONCAT('$user_email','$user_pass'),512),'$phone','admin','$user_address')";
+                if(mysqli_query($dbcon,$insert_user))
+                {
+                    header('Location: adminDetails.php');
+                }
+
+
+
+            }
+
+            if(isset($_POST['Update_Admin']))
+            {
+				
+				$id=$_SESSION['id'];
+                $user_fname=mysqli_real_escape_string($dbcon, $_POST['fname_u']);//here getting result from the post array after submitting the form.
+                $user_lname=mysqli_real_escape_string($dbcon, $_POST['lname_u']);
+                $user_address=mysqli_real_escape_string($dbcon, $_POST['address_u']);
+                $phone=mysqli_real_escape_string($dbcon, $_POST['phone_u']);
+
+                $user_email=mysqli_real_escape_string($dbcon, $_POST['email_u']);//same
+
+				echo $user_fname;
+                if($user_fname=='' || $user_lname=='' || $user_address=='')
+                {
+                    //javascript use for input checking
+                    echo"<script>alert('Please enter all the personal details')</script>";
+                    echo"1";
+                    exit();//this use if first is not work then other will not show
+                }
+
+
+
+                if($user_email=='')
+                {
+                    echo"<script>alert('Please enter the email')</script>";
+                    echo"3";
+                    exit();
+                }
+
+                $insert_user="Update user_tbl set FirstName= '$user_fname', LastName = '$user_lname', email = '$user_email', phone_number = '$phone', address = '$user_address' WHERE PID = $id";
+
+               //echo '$insert_user';
+				
+                if(mysqli_query($dbcon,$insert_user))
+                {
+					
+					header('Location: adminDetails.php');
+					
+                 
+                }
+            }?>
+
 <html lang="en">
 <head>
 
@@ -158,7 +259,7 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
                 require_once('dbconnect.php');
                 if (isset($_GET['id']))
                 {
-                    $id=$_GET['id'];
+                    $id=$_SESSION['id']=$_GET['id'];
                     $result3 = mysqli_query($dbcon,"SELECT * FROM user_tbl where PID='$id'");
                     while($row3 = mysqli_fetch_array($result3))
                     {
@@ -350,108 +451,7 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
                 <?php }?>
             </div><!--/.fluid-container-->
 
-            <?php
-            include("dbconnect.php");
 
-            if(isset($_POST['Add_Member']))
-            {
-
-                $user_fname=mysqli_real_escape_string($dbcon, $_POST['fname']);//here getting result from the post array after submitting the form.
-                $user_lname=mysqli_real_escape_string($dbcon, $_POST['lname']);
-                $user_address=mysqli_real_escape_string($dbcon, $_POST['address']);
-                $phone=mysqli_real_escape_string($dbcon, $_POST['phone']);
-
-                $user_pass=mysqli_real_escape_string($dbcon, $_POST['pass']);//same
-                $user_email=mysqli_real_escape_string($dbcon, $_POST['email']);//same
-
-
-                if($user_fname=='' || $user_lname=='' || $user_address=='')
-                {
-                    //javascript use for input checking
-                    echo"<script>alert('Please enter all the personal details')</script>";
-                    echo"1";
-                    exit();//this use if first is not work then other will not show
-                }
-
-                if($user_pass=='')
-                {
-                    echo"<script>alert('Please enter the password')</script>";
-                    echo"2";
-                    exit();
-                }
-
-                if($user_email=='')
-                {
-                    echo"<script>alert('Please enter the email')</script>";
-                    echo"3";
-                    exit();
-                }
-//here query check weather if user already registered so can't register again.
-                $check_email_query="select * from user_tbl WHERE email='$user_email'";
-                $run_query=mysqli_query($dbcon,$check_email_query);
-
-                if(mysqli_num_rows($run_query)>0)
-                {
-                    echo "<script>alert('Email $user_email is already exist in our database, Please try another one!')</script>";
-                    exit();
-                }
-                echo "ahsfjsak";
-//insert the user into the database.
-
-                $insert_user="insert into user_tbl (FirstName,LastName,email,upassword,phone_number,user_role,address) VALUES ('$user_fname','$user_lname','$user_email',SHA2(CONCAT('$user_email','$user_pass'),512),'$phone','admin','$user_address')";
-                if(mysqli_query($dbcon,$insert_user))
-                {
-                    header('Location: adminDetails.php');
-                }
-
-
-
-            }
-
-            if(isset($_POST['Update_Admin']))
-            {
-
-                $user_fname=mysqli_real_escape_string($dbcon, $_POST['fname_u']);//here getting result from the post array after submitting the form.
-                $user_lname=mysqli_real_escape_string($dbcon, $_POST['lname_u']);
-                $user_address=mysqli_real_escape_string($dbcon, $_POST['address_u']);
-                $phone=mysqli_real_escape_string($dbcon, $_POST['phone_u']);
-
-                $user_email=mysqli_real_escape_string($dbcon, $_POST['email_u']);//same
-
-
-                if($user_fname=='' || $user_lname=='' || $user_address=='')
-                {
-                    //javascript use for input checking
-                    echo"<script>alert('Please enter all the personal details')</script>";
-                    echo"1";
-                    exit();//this use if first is not work then other will not show
-                }
-
-
-
-                if($user_email=='')
-                {
-                    echo"<script>alert('Please enter the email')</script>";
-                    echo"3";
-                    exit();
-                }
-
-                $insert_user="Update user_tbl set FirstName= '$user_fname', LastName = '$user_lname', email = '$user_email', phone_number = '$phone', address = '$user_address' WHERE PID = '$id'";
-
-               echo '$insert_user';
-
-                if(mysqli_query($dbcon,$insert_user))
-                {
-                    header('Location: adminDetails.php');
-                }
-
-
-
-            }
-
-
-
-            ?>
             <!-- end: Content -->
         </div><!--/#content.span10-->
     </div><!--/fluid-row-->
