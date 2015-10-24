@@ -171,7 +171,7 @@ $ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$s
 				<div id="cardPile"> 
 				<?php 
 				
-				$numbers=explode(",",$row['Question_Desc']);
+				$numbers=explode(",",$row['question']);
 				
 				for($i=0;$i<count($numbers);$i++)
 				{

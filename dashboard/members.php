@@ -52,7 +52,7 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
 </head>
 
 <body>
-<form>
+<form name="msform" action="members.php" method="post">
 <!-- start: Header -->
 <div class="navbar">
     <div class="navbar-inner">
@@ -99,57 +99,68 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
     <div class="row-fluid">
         <?php if(isset($_SESSION['email']) && (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'admin')) : ?>
 
-                <div id="sidebar-left" class="span2">
-                    <div class="nav-collapse sidebar-nav">
-                        <ul class="nav nav-tabs nav-stacked main-menu">
-                            <li><a href="dashboard.php"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
+            <div id="sidebar-left" class="span2">
+                <div class="nav-collapse sidebar-nav">
+                    <ul class="nav nav-tabs nav-stacked main-menu">
+                        <li><a href="Dashboard.php"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
+                        <li>
+                            <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
+                            <ul>
+                                <li><a class="submenu" href="AddMember.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Member</span></a></li>
+                                <li><a class="submenu" href="members.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Members</span></a></li>
 
-                            <li><a href="reports.php"><i class="icon-list-alt"></i><span class="hidden-tablet"> Reports</span></a></li>
-                            <li>
-                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
-                                <ul>
-                                    <li><a class="submenu" href="AddMember.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Member</span></a></li>
-                                    <li><a class="submenu" href="members.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Members</span></a></li>
+                            </ul>
 
-                                </ul>
+                        </li>
+                        <li>
+                            <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Questions</span></a>
+                            <ul>
+                                <li><a class="submenu" href="AddQuestion.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Question</span></a></li>
+                                <li><a class="submenu" href="Questions.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Questions</span></a></li>
 
-                            </li>
-                            <li><a href="file-manager.html"><i class="icon-folder-open"></i><span class="hidden-tablet"> File Manager</span></a></li>
-                            <li><a href="settings.html"><i class="icon-lock"></i><span class="hidden-tablet"> Settings</span></a></li>
-                        </ul>
-                    </div>
+                            </ul>
+
+                        </li>
+                    </ul>
                 </div>
+            </div>
 
         <?php elseif(isset($_SESSION['email']) && (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin')) : ?>
 
-                <div id="sidebar-left" class="span2">
-                    <div class="nav-collapse sidebar-nav">
-                        <ul class="nav nav-tabs nav-stacked main-menu">
-                            <li><a href="dashboard.php"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
-                            <li>
-                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Admin</span></a>
-                                <ul>
-                                    <li><a class="submenu" href="addAdmin.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Admin</span></a></li>
-                                    <li><a class="submenu" href="adminDetails.php"><i class="icon-file-alt"></i><span class="hidden-tablet">View Admins</span></a></li>
+            <div id="sidebar-left" class="span2">
+                <div class="nav-collapse sidebar-nav">
+                    <ul class="nav nav-tabs nav-stacked main-menu">
+                        <li><a href="Dashboard.php"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
+                        <li>
+                            <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Admin</span></a>
+                            <ul>
+                                <li><a class="submenu" href="addAdmin.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Admin</span></a></li>
+                                <li><a class="submenu" href="adminDetails.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Admins</span></a></li>
 
-                                </ul>
+                            </ul>
 
-                            </li>
-                            <li><a href="reports.php"><i class="icon-list-alt"></i><span class="hidden-tablet"> Reports</span></a></li>
-                            <li>
-                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
-                                <ul>
-                                    <li><a class="submenu" href="AddMember.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Member</span></a></li>
-                                    <li><a class="submenu" href="members.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Members</span></a></li>
+                        </li>
+                        <li>
+                            <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
+                            <ul>
+                                <li><a class="submenu" href="AddMember.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Member</span></a></li>
+                                <li><a class="submenu" href="members.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Members</span></a></li>
 
-                                </ul>
+                            </ul>
 
-                            </li>
-                            <li><a href="file-manager.html"><i class="icon-folder-open"></i><span class="hidden-tablet"> File Manager</span></a></li>
-                            <li><a href="settings.html"><i class="icon-lock"></i><span class="hidden-tablet"> Settings</span></a></li>
-                        </ul>
-                    </div>
+                        </li>
+                        <li>
+                            <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Questions</span></a>
+                            <ul>
+                                <li><a class="submenu" href="AddQuestion.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Question</span></a></li>
+                                <li><a class="submenu" href="Questions.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Questions</span></a></li>
+
+                            </ul>
+
+                        </li>
+                    </ul>
                 </div>
+            </div>
 
 
         <?php endif; ?>
@@ -191,13 +202,14 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
 						<table class="table table-striped table-bordered bootstrap-datatable datatable">
 						  <thead>
 							  <tr>
-								<th>FirstName</th>
+                             	<th>FirstName</th>
                                 <th>LastName</th>
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Edit User</th>
 							  </tr>
-						  </thead>   
+						  </thead>
+
 						  <?php
                             include("dbconnect.php");
                             if (isset($_GET["page"])) { $page  = $_GET["page"]; } else { $page=1; };
@@ -215,22 +227,29 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
                             $user_Id=$row[0];
                             $user_fname=$row[1];
                             $user_lname=$row[2];
-                            $user_email=$row[3];
-                            $phone=$row[5];
+                            $user_email=$row[4];
+                            $phone=$row[6];
 							
 							echo " <tr>";
+
                             echo "<td> <a href=AddMember.php?id=" .$user_Id.">".$user_fname."</a> </td>";
                             echo "<td>".$user_lname."</td>";
                             echo "<td>".$user_email."</td>";
                             echo "<td>".$phone."</td>";
-							echo "<td> <a class=\"btn btn-info\" href=board.php?id=".$user_Id."><i class=\"halflings-icon white edit\"></i></a>  <a class=\"btn btn-danger\" href=delete.php?id=".$user_Id." onclick=\"return confirm('Are you sure?')\"><i class=\"halflings-icon white trash\"></i></a></td>";
+							echo "<td> <a class=\"btn btn-info\" href=AddMember.php?id=".$user_Id."><i class=\"halflings-icon white edit\"></i></a>  <a class=\"btn btn-danger\" href=delete.php?id=".$user_Id." onclick=\"return confirm('Are you sure?')\"><i class=\"halflings-icon white trash\"></i></a></td>";
 							echo "</tr>";
 							}
+
+
                             ?>
 							
                             </tbody>
-					  </table>            
-					</div>
+					  </table>
+
+
+
+
+                    </div>
 				</div><!--/span-->   
 
 	</div><!--/.fluid-container-->

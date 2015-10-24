@@ -1,14 +1,115 @@
 <?php
 session_start();
 
+
 if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_role']!='superadmin'))
 {
     header('Location: ../index.php');//redirect to login page to secure the welcome page without login access.
 	exit;
 }
 
-
 ?>
+
+<?php
+include("dbconnect.php");
+
+if(isset($_POST['Add_Member']))
+{
+
+
+    $user_fname=mysqli_real_escape_string($dbcon, $_POST['fname']);//here getting result from the post array after submitting the form.
+    $user_lname=mysqli_real_escape_string($dbcon, $_POST['lname']);
+    $user_address=mysqli_real_escape_string($dbcon, $_POST['address']);
+    $phone=mysqli_real_escape_string($dbcon, $_POST['phone']);
+
+    $user_pass=mysqli_real_escape_string($dbcon, $_POST['pass']);//same
+    $user_email=mysqli_real_escape_string($dbcon, $_POST['email']);//same
+
+
+    if($user_fname=='' || $user_lname=='' || $user_address=='')
+    {
+        //javascript use for input checking
+        echo"<script>alert('Please enter all the personal details')</script>";
+        echo"1";
+        exit();//this use if first is not work then other will not show
+    }
+
+    if($user_pass=='')
+    {
+        echo"<script>alert('Please enter the password')</script>";
+        echo"2";
+        exit();
+    }
+
+    if($user_email=='')
+    {
+        echo"<script>alert('Please enter the email')</script>";
+        echo"3";
+        exit();
+    }
+//here query check weather if user already registered so can't register again.
+    $check_email_query="select * from user_tbl WHERE email='$user_email'";
+    $run_query=mysqli_query($dbcon,$check_email_query);
+
+    if(mysqli_num_rows($run_query)>0)
+    {
+        echo "<script>alert('Email $user_email is already exist in our database, Please try another one!')</script>";
+        exit();
+    }
+    echo "ahsfjsak";
+//insert the user into the database.
+
+    $insert_user="insert into user_tbl (FirstName,LastName,username,email,upassword,phone_number,user_role,address) VALUES ('$user_fname','$user_lname','$user_email','$user_email',SHA2(CONCAT('$user_email','$user_pass'),512),'$phone','student','$user_address')";
+    if(mysqli_query($dbcon,$insert_user))
+    {
+        header('Location: members.php');
+    }
+
+
+
+}
+
+if(isset($_POST['Update_Member']))
+{
+
+    $id=$_SESSION['id'];
+    $user_fname=mysqli_real_escape_string($dbcon, $_POST['fname_u']);//here getting result from the post array after submitting the form.
+    $user_lname=mysqli_real_escape_string($dbcon, $_POST['lname_u']);
+    $user_address=mysqli_real_escape_string($dbcon, $_POST['address_u']);
+    $phone=mysqli_real_escape_string($dbcon, $_POST['phone_u']);
+
+    $user_email=mysqli_real_escape_string($dbcon, $_POST['email_u']);//same
+
+    echo $user_fname;
+    if($user_fname=='' || $user_lname=='' || $user_address=='')
+    {
+        //javascript use for input checking
+        echo"<script>alert('Please enter all the personal details')</script>";
+        echo"1";
+        exit();//this use if first is not work then other will not show
+    }
+
+
+
+    if($user_email=='')
+    {
+        echo"<script>alert('Please enter the email')</script>";
+        echo"3";
+        exit();
+    }
+
+    $insert_user="Update user_tbl set FirstName= '$user_fname', LastName = '$user_lname', email = '$user_email', phone_number = '$phone', address = '$user_address' WHERE PID = $id";
+
+    //echo '$insert_user';
+
+    if(mysqli_query($dbcon,$insert_user))
+    {
+
+        header('Location: members.php');
+
+
+    }
+}?>
 
 <html lang="en">
 <head>
@@ -81,7 +182,7 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
                                 <span>Account Settings</span>
                             </li>
                             <li><a href="#"><i class="halflings-icon user"></i> Profile</a></li>
-                            <li><a href="index.php"><i class="halflings-icon off"></i> Logout</a></li>
+                            <li><a href="logout.php"><i class="halflings-icon off"></i> Logout</a></li>
                         </ul>
                     </li>
                     <!-- end: User Dropdown -->
@@ -93,40 +194,78 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
     </div>
 </div>
 <!-- start: Header -->
-<form id="msform" role="form" method="post" action="AddMember.php">
+<form id="msform" role="form" method="post" action="AddMember.php" autocomplete="off">
 
     <div class="container-fluid-full">
         <div class="row-fluid">
 
             <!-- start: Main Menu -->
-            <div id="sidebar-left" class="span2">
-                <div class="nav-collapse sidebar-nav">
-                    <ul class="nav nav-tabs nav-stacked main-menu">
-                        <li><a href="dashboard.php"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
-                        <li>
-                            <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Admin</span></a>
-                            <ul>
-                                <li><a class="submenu" href="addAdmin.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Admin</span></a></li>
-                                <li><a class="submenu" href="adminDetails.php"><i class="icon-file-alt"></i><span class="hidden-tablet">View Admins</span></a></li>
+            <?php if(isset($_SESSION['email']) && (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'admin')) : ?>
 
-                            </ul>
+                <div id="sidebar-left" class="span2">
+                    <div class="nav-collapse sidebar-nav">
+                        <ul class="nav nav-tabs nav-stacked main-menu">
+                            <li><a href="Dashboard.php"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="AddMember.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Member</span></a></li>
+                                    <li><a class="submenu" href="members.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Members</span></a></li>
 
-                        </li>
-                        <li><a href="reports.php"><i class="icon-list-alt"></i><span class="hidden-tablet"> Reports</span></a></li>
-                        <li>
-                            <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
-                            <ul>
-                                <li><a class="submenu" href="AddMember.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Member</span></a></li>
-                                <li><a class="submenu" href="members.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Members</span></a></li>
+                                </ul>
 
-                            </ul>
+                            </li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Questions</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="AddQuestion.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Question</span></a></li>
+                                    <li><a class="submenu" href="Questions.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Questions</span></a></li>
 
-                        </li>
-                        <li><a href="file-manager.html"><i class="icon-folder-open"></i><span class="hidden-tablet"> File Manager</span></a></li>
-                        <li><a href="settings.html"><i class="icon-lock"></i><span class="hidden-tablet"> Settings</span></a></li>
-                    </ul>
+                                </ul>
+
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
+
+            <?php elseif(isset($_SESSION['email']) && (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin')) : ?>
+
+                <div id="sidebar-left" class="span2">
+                    <div class="nav-collapse sidebar-nav">
+                        <ul class="nav nav-tabs nav-stacked main-menu">
+                            <li><a href="Dashboard.php"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Admin</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="addAdmin.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Admin</span></a></li>
+                                    <li><a class="submenu" href="adminDetails.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Admins</span></a></li>
+
+                                </ul>
+
+                            </li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="AddMember.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Member</span></a></li>
+                                    <li><a class="submenu" href="members.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Members</span></a></li>
+
+                                </ul>
+
+                            </li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Questions</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="AddQuestion.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Question</span></a></li>
+                                    <li><a class="submenu" href="Questions.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Questions</span></a></li>
+
+                                </ul>
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            <?php endif; ?>
             <!-- end: Main Menu -->
 
             <noscript>
@@ -143,115 +282,28 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
                 <ul class="breadcrumb">
                     <li>
                         <i class="icon-home"></i>
-                        <a href="daashboard.php">Home</a>
+                        <a href="index1.html">Home</a>
                         <i class="icon-angle-right"></i>
                     </li>
                     <li><a href="#">Member Details</a></li>
                 </ul>
 
                 <?php
-            require_once('dbconnect.php');
+                require_once('dbconnect.php');
                 if (isset($_GET['id']))
                 {
-            $id=$_GET['id'];
-            $result3 = mysqli_query($dbcon,"SELECT * FROM user_tbl where PID='$id'");
-            while($row3 = mysqli_fetch_array($result3))
-            {
-                $fname=$row3['FirstName'];
-                $lname=$row3['LastName'];
-                $email=$row3['email'];
-                $phone=$row3['phone_number'];
-                $address=$row3['address'];
-                $role=$row3['user_role'];
-            }
-            ?>
-            <div class="row-fluid sortable">
-                <div class="box span12">
-                    <div class="box-header" data-original-title>
-                        <h2><i class="halflings-icon edit"></i><span class="break"></span>Member Details</h2>
-                        <div class="box-icon">
-                            <a href="#" class="btn-setting"><i class="halflings-icon wrench"></i></a>
-                            <a href="#" class="btn-minimize"><i class="halflings-icon chevron-up"></i></a>
-                            <a href="#" class="btn-close"><i class="halflings-icon remove"></i></a>
-                        </div>
-                    </div>
-                    <div class="box-content">
-                        <form class="form-horizontal">
-                            <fieldset>
-                                <div class="control-group">
-                                    <label class="control-label" for="focusedInput">First Name</label>
-                                    <div class="controls">
-                                        <?php
-echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='First Name' value='$fname'>"
-
-?>
-                                      </div>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label" for="focusedInput">Last Name</label>
-                                    <div class="controls">
-                                        <?php
-                                        echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Last Name' value='$lname'>"
-
-                                        ?>
-                                    </div>
-                                </div>
-
-                                <div class="control-group">
-                                    <label class="control-label" for="focusedInput">Email</label>
-                                    <div class="controls">
-                                        <?php
-                                        echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Email' value='$email'>"
-
-                                        ?>
-                                    </div>
-                                </div>
-
-                                <div class="control-group">
-                                    <label class="control-label" for="focusedInput">Phone</label>
-                                    <div class="controls">
-                                        <?php
-                                        echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Phone' value='$phone'>"
-
-                                        ?>
-                                    </div>
-                                </div>
-
-                                <div class="control-group">
-                                    <label class="control-label" for="focusedInput">Address</label>
-                                    <div class="controls">
-                                        <?php
-                                        echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Address' value='$address'>"
-
-                                        ?>
-                                    </div>
-                                </div>
-
-                                <div class="control-group">
-                                    <label class="control-label" for="focusedInput">User Role</label>
-                                    <div class="controls">
-                                        <?php
-                                        echo "<input class='input-xlarge uneditable-input' id='focusedInput' type='text' placeholder='User Role' value='$role'>"
-
-                                        ?>
-                                    </div>
-                                </div>
-
-                                <div class="form-actions">
-                                    <button type="submit" class="btn btn-primary">Save changes</button>
-                                    <button class="btn">Cancel</button>
-                                </div>
-                            </fieldset>
-                        </form>
-
-                    </div>
-                </div><!--/span-->
-
-            </div><!--/row-->
-
-                <?php }
-                else
-                {?>
+                    $id=$_SESSION['id']=$_GET['id'];
+                    $result3 = mysqli_query($dbcon,"SELECT * FROM user_tbl where PID='$id'");
+                    while($row3 = mysqli_fetch_array($result3))
+                    {
+                        $fname=$row3['FirstName'];
+                        $lname=$row3['LastName'];
+                        $email=$row3['email'];
+                        $phone=$row3['phone_number'];
+                        $address=$row3['address'];
+                        $role=$row3['user_role'];
+                    }
+                    ?>
                     <div class="row-fluid sortable">
                         <div class="box span12">
                             <div class="box-header" data-original-title>
@@ -269,7 +321,7 @@ echo "<input class='input-xlarge focused' id='focusedInput' type='text' placehol
                                             <label class="control-label" for="focusedInput">First Name</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='First Name'>"
+                                                echo "<input class='input-xlarge focused' id='focusedInput' name='fname_u' type='text' placeholder='First Name' value='$fname'>"
 
                                                 ?>
                                             </div>
@@ -278,7 +330,7 @@ echo "<input class='input-xlarge focused' id='focusedInput' type='text' placehol
                                             <label class="control-label" for="focusedInput">Last Name</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Last Name' >"
+                                                echo "<input class='input-xlarge focused' id='focusedInput' name='lname_u' type='text' placeholder='Last Name' value='$lname'>"
 
                                                 ?>
                                             </div>
@@ -288,7 +340,7 @@ echo "<input class='input-xlarge focused' id='focusedInput' type='text' placehol
                                             <label class="control-label" for="focusedInput">Email</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Email'>"
+                                                echo "<input class='input-xlarge focused' id='focusedInput' name='email_u' type='text' placeholder='Email' value='$email'>"
 
                                                 ?>
                                             </div>
@@ -298,7 +350,7 @@ echo "<input class='input-xlarge focused' id='focusedInput' type='text' placehol
                                             <label class="control-label" for="focusedInput">Phone</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Phone' >"
+                                                echo "<input class='input-xlarge focused' id='focusedInput' name='phone_u' type='text' placeholder='Phone' value='$phone'>"
 
                                                 ?>
                                             </div>
@@ -308,24 +360,109 @@ echo "<input class='input-xlarge focused' id='focusedInput' type='text' placehol
                                             <label class="control-label" for="focusedInput">Address</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' type='text' placeholder='Address' >"
+                                                echo "<textarea name='address_u' rows='2' cols='10'>".$address;
+                                                echo "</textarea>"
+
+                                                ?>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-actions">
+                                            <input type="submit" name="Update_Member" class="btn btn-primary" value="Update Member"/>
+                                            <a href="members.php"><button class="btn">Cancel</button></a>
+                                        </div>
+                                    </fieldset>
+                                </form>
+
+                            </div>
+                        </div><!--/span-->
+
+                    </div><!--/row-->
+
+
+
+
+
+                    <?php
+
+                }
+                else
+                {?>
+                    <div class="row-fluid sortable">
+                        <div class="box span12">
+                            <div class="box-header" data-original-title>
+                                <h2><i class="halflings-icon edit"></i><span class="break"></span>Member Details</h2>
+                                <div class="box-icon">
+                                    <a href="#" class="btn-setting"><i class="halflings-icon wrench"></i></a>
+                                    <a href="#" class="btn-minimize"><i class="halflings-icon chevron-up"></i></a>
+                                    <a href="#" class="btn-close"><i class="halflings-icon remove"></i></a>
+                                </div>
+                            </div>
+                            <div class="box-content">
+                                <form class="form-horizontal" autocomplete="off">
+                                    <fieldset>
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">First Name</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge focused' id='focusedInput' name='fname' type='text' placeholder='First Name'>"
+
+                                                ?>
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">Last Name</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge focused' id='focusedInput' name='lname' type='text' placeholder='Last Name' >"
 
                                                 ?>
                                             </div>
                                         </div>
 
                                         <div class="control-group">
-                                            <label class="control-label" for="focusedInput">User Role</label>
+                                            <label class="control-label" for="focusedInput">Email</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge uneditable-input' id='focusedInput' type='text' placeholder='User Role' >"
+                                                echo "<input class='input-xlarge focused' id='focusedInput' name='email' type='text' placeholder='Email'>"
+
+                                                ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">Phone</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge focused' id='focusedInput' name='phone' type='text' placeholder='Phone' >"
+
+                                                ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">Address</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<textarea name='address' rows='2' cols='10'></textarea>"
+
+                                                ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="focusedInput">Password</label>
+                                            <div class="controls">
+                                                <?php
+                                                echo "<input class='input-xlarge focused' id='focusedInput' name='pass' type='password' value='' >"
 
                                                 ?>
                                             </div>
                                         </div>
 
                                         <div class="form-actions">
-                                            <button type="submit" class="btn btn-primary">Add Member</button>
+                                            <input type="submit" name="Add_Member" class="btn btn-primary" value="Add Member"/>
                                             <a href="members.php"><button type="button" class="btn">Cancel</button></a>
                                         </div>
                                     </fieldset>
@@ -337,94 +474,103 @@ echo "<input class='input-xlarge focused' id='focusedInput' type='text' placehol
                     </div><!--/row-->
 
                 <?php }?>
-        </div><!--/.fluid-container-->
+            </div><!--/.fluid-container-->
 
-        <!-- end: Content -->
-    </div><!--/#content.span10-->
-</div><!--/fluid-row-->
 
-<div class="modal hide fade" id="myModal">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h3>Settings</h3>
+            <!-- end: Content -->
+        </div><!--/#content.span10-->
+    </div><!--/fluid-row-->
+
+    <div class="modal hide fade" id="myModal">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h3>Settings</h3>
+        </div>
+        <div class="modal-body">
+            <p>Here settings can be configured...</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn" data-dismiss="modal">Close</a>
+            <a href="#" class="btn btn-primary">Save changes</a>
+        </div>
     </div>
-    <div class="modal-body">
-        <p>Here settings can be configured...</p>
-    </div>
-    <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Close</a>
-        <a href="#" class="btn btn-primary">Save changes</a>
-    </div>
-</div>
 
-<div class="clearfix"></div>
+    <div class="clearfix"></div>
 
-<footer>
+    <footer>
 
-    <p>
-        <span style="text-align:left;float:left">&copy; 2015 <a href="" alt="">Statistics Module</a></span>
+        <p>
+            <span style="text-align:left;float:left">&copy; 2015 <a href="" alt="">Statistics Module</a></span>
 
-    </p>
+        </p>
 
-</footer>
+    </footer>
 
-<!-- start: JavaScript-->
+    <!-- start: JavaScript-->
 
-<script src="js/jquery-1.9.1.min.js"></script>
-<script src="js/jquery-migrate-1.0.0.min.js"></script>
+    <script src="js/jquery-1.9.1.min.js"></script>
+    <script src="js/jquery-migrate-1.0.0.min.js"></script>
 
-<script src="js/jquery-ui-1.10.0.custom.min.js"></script>
+    <script src="js/jquery-ui-1.10.0.custom.min.js"></script>
 
-<script src="js/jquery.ui.touch-punch.js"></script>
+    <script src="js/jquery.ui.touch-punch.js"></script>
 
-<script src="js/modernizr.js"></script>
+    <script src="js/modernizr.js"></script>
 
-<script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
 
-<script src="js/jquery.cookie.js"></script>
+    <script src="js/jquery.cookie.js"></script>
 
-<script src='js/fullcalendar.min.js'></script>
+    <script src='js/fullcalendar.min.js'></script>
 
-<script src='js/jquery.dataTables.min.js'></script>
+    <script src='js/jquery.dataTables.min.js'></script>
 
-<script src="js/excanvas.js"></script>
-<script src="js/jquery.flot.js"></script>
-<script src="js/jquery.flot.pie.js"></script>
-<script src="js/jquery.flot.stack.js"></script>
-<script src="js/jquery.flot.resize.min.js"></script>
+    <script src="js/excanvas.js"></script>
+    <script src="js/jquery.flot.js"></script>
+    <script src="js/jquery.flot.pie.js"></script>
+    <script src="js/jquery.flot.stack.js"></script>
+    <script src="js/jquery.flot.resize.min.js"></script>
 
-<script src="js/jquery.chosen.min.js"></script>
+    <script src="js/jquery.chosen.min.js"></script>
 
-<script src="js/jquery.uniform.min.js"></script>
+    <script src="js/jquery.uniform.min.js"></script>
 
-<script src="js/jquery.cleditor.min.js"></script>
+    <script src="js/jquery.cleditor.min.js"></script>
 
-<script src="js/jquery.noty.js"></script>
+    <script src="js/jquery.noty.js"></script>
 
-<script src="js/jquery.elfinder.min.js"></script>
+    <script src="js/jquery.elfinder.min.js"></script>
 
-<script src="js/jquery.raty.min.js"></script>
+    <script src="js/jquery.raty.min.js"></script>
 
-<script src="js/jquery.iphone.toggle.js"></script>
+    <script src="js/jquery.iphone.toggle.js"></script>
 
-<script src="js/jquery.uploadify-3.1.min.js"></script>
+    <script src="js/jquery.uploadify-3.1.min.js"></script>
 
-<script src="js/jquery.gritter.min.js"></script>
+    <script src="js/jquery.gritter.min.js"></script>
 
-<script src="js/jquery.imagesloaded.js"></script>
+    <script src="js/jquery.imagesloaded.js"></script>
 
-<script src="js/jquery.masonry.min.js"></script>
+    <script src="js/jquery.masonry.min.js"></script>
 
-<script src="js/jquery.knob.modified.js"></script>
+    <script src="js/jquery.knob.modified.js"></script>
 
-<script src="js/jquery.sparkline.min.js"></script>
+    <script src="js/jquery.sparkline.min.js"></script>
 
-<script src="js/counter.js"></script>
+    <script src="js/counter.js"></script>
 
-<script src="js/retina.js"></script>
+    <script src="js/retina.js"></script>
 
-<script src="js/custom.js"></script>
-<!-- end: JavaScript-->
+    <script src="js/custom.js"></script>
+    <!-- end: JavaScript-->
+    <?php
+    // remove all session variables
+    //  session_unset();
 
+    // destroy the session
+    //   session_destroy();
+    ?>
+
+</form>
 </body>
 </html>

@@ -1,4 +1,64 @@
 <!doctype HTML>
+
+
+<?php
+include("dbconnect.php");
+
+if(isset($_POST['Register']))
+{
+	
+    $user_fname=mysqli_real_escape_string($dbcon, $_POST['fname']);//here getting result from the post array after submitting the form.
+    $user_lname=mysqli_real_escape_string($dbcon, $_POST['lname']);
+    $user_address=mysqli_real_escape_string($dbcon, $_POST['address']);
+    $phone=mysqli_real_escape_string($dbcon, $_POST['phone']);
+
+    $user_pass=mysqli_real_escape_string($dbcon, $_POST['pass']);//same
+    $user_email=mysqli_real_escape_string($dbcon, $_POST['email']);//same
+
+
+    if($user_fname=='' || $user_lname=='' || $user_address=='')
+    {
+        //javascript use for input checking
+        echo"<script>alert('Please enter all the personal details')</script>";
+		echo"1";
+        exit();//this use if first is not work then other will not show
+    }
+
+    if($user_pass=='')
+    {
+        echo"<script>alert('Please enter the password')</script>";
+		echo"2";
+        exit();
+    }
+
+    if($user_email=='')
+    {
+        echo"<script>alert('Please enter the email')</script>";
+		echo"3";
+        exit();
+    }
+//here query check weather if user already registered so can't register again.
+    $check_email_query="select * from user_tbl WHERE email='$user_email'";
+    $run_query=mysqli_query($dbcon,$check_email_query);
+	
+    if(mysqli_num_rows($run_query)>0)
+    {
+        echo "<script>alert('Email $user_email is already exist in our database, Please try another one!')</script>";
+        exit();
+    }
+	echo "ahsfjsak";
+//insert the user into the database.
+
+    $insert_user="insert into user_tbl (FirstName,LastName,username,email,upassword,phone_number,user_role,address) VALUES ('$user_fname','$user_lname','$user_email','$user_email',SHA2(CONCAT('$user_email','$user_pass'),512),'$phone','Student','$user_address')";
+    if(mysqli_query($dbcon,$insert_user))
+    {
+       header('Location: index.php');  
+    }
+
+}
+
+?>
+
 <html>
 <head>
 
@@ -70,64 +130,3 @@
 
 </body>
 </html>
-
-
-<?php
-include("dbconnect.php");
-
-if(isset($_POST['Register']))
-{
-	
-    $user_fname=mysqli_real_escape_string($dbcon, $_POST['fname']);//here getting result from the post array after submitting the form.
-    $user_lname=mysqli_real_escape_string($dbcon, $_POST['lname']);
-    $user_address=mysqli_real_escape_string($dbcon, $_POST['address']);
-    $phone=mysqli_real_escape_string($dbcon, $_POST['phone']);
-
-    $user_pass=mysqli_real_escape_string($dbcon, $_POST['pass']);//same
-    $user_email=mysqli_real_escape_string($dbcon, $_POST['email']);//same
-
-
-    if($user_fname=='' || $user_lname=='' || $user_address=='')
-    {
-        //javascript use for input checking
-        echo"<script>alert('Please enter all the personal details')</script>";
-		echo"1";
-        exit();//this use if first is not work then other will not show
-    }
-
-    if($user_pass=='')
-    {
-        echo"<script>alert('Please enter the password')</script>";
-		echo"2";
-        exit();
-    }
-
-    if($user_email=='')
-    {
-        echo"<script>alert('Please enter the email')</script>";
-		echo"3";
-        exit();
-    }
-//here query check weather if user already registered so can't register again.
-    $check_email_query="select * from user_tbl WHERE email='$user_email'";
-    $run_query=mysqli_query($dbcon,$check_email_query);
-	
-    if(mysqli_num_rows($run_query)>0)
-    {
-        echo "<script>alert('Email $user_email is already exist in our database, Please try another one!')</script>";
-        exit();
-    }
-	echo "ahsfjsak";
-//insert the user into the database.
-
-    $insert_user="insert into user_tbl (FirstName,LastName,username,email,upassword,phone_number,user_role,address) VALUES ('$user_fname','$user_lname','$user_email','$user_email',SHA2(CONCAT('$user_email','$user_pass'),512),'$phone','Student','$user_address')";
-    if(mysqli_query($dbcon,$insert_user))
-    {
-       header('Location: index.php');  
-    }
-
-
-
-}
-
-?>

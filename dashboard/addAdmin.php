@@ -15,106 +15,106 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
 
 ?>
 
-            <?php
-            include("dbconnect.php");
+<?php
+include("dbconnect.php");
 
-            if(isset($_POST['Add_Member']))
-            {
-				
-
-                $user_fname=mysqli_real_escape_string($dbcon, $_POST['fname']);//here getting result from the post array after submitting the form.
-                $user_lname=mysqli_real_escape_string($dbcon, $_POST['lname']);
-                $user_address=mysqli_real_escape_string($dbcon, $_POST['address']);
-                $phone=mysqli_real_escape_string($dbcon, $_POST['phone']);
-
-                $user_pass=mysqli_real_escape_string($dbcon, $_POST['pass']);//same
-                $user_email=mysqli_real_escape_string($dbcon, $_POST['email']);//same
+if(isset($_POST['Add_Member']))
+{
 
 
-                if($user_fname=='' || $user_lname=='' || $user_address=='')
-                {
-                    //javascript use for input checking
-                    echo"<script>alert('Please enter all the personal details')</script>";
-                    echo"1";
-                    exit();//this use if first is not work then other will not show
-                }
+    $user_fname=mysqli_real_escape_string($dbcon, $_POST['fname']);//here getting result from the post array after submitting the form.
+    $user_lname=mysqli_real_escape_string($dbcon, $_POST['lname']);
+    $user_address=mysqli_real_escape_string($dbcon, $_POST['address']);
+    $phone=mysqli_real_escape_string($dbcon, $_POST['phone']);
 
-                if($user_pass=='')
-                {
-                    echo"<script>alert('Please enter the password')</script>";
-                    echo"2";
-                    exit();
-                }
+    $user_pass=mysqli_real_escape_string($dbcon, $_POST['pass']);//same
+    $user_email=mysqli_real_escape_string($dbcon, $_POST['email']);//same
 
-                if($user_email=='')
-                {
-                    echo"<script>alert('Please enter the email')</script>";
-                    echo"3";
-                    exit();
-                }
+
+    if($user_fname=='' || $user_lname=='' || $user_address=='')
+    {
+        //javascript use for input checking
+        echo"<script>alert('Please enter all the personal details')</script>";
+        //echo"1";
+        exit();//this use if first is not work then other will not show
+    }
+
+    if($user_pass=='')
+    {
+        echo"<script>alert('Please enter the password')</script>";
+        echo"2";
+        exit();
+    }
+
+    if($user_email=='')
+    {
+        echo"<script>alert('Please enter the email')</script>";
+        echo"3";
+        exit();
+    }
 //here query check weather if user already registered so can't register again.
-                $check_email_query="select * from user_tbl WHERE email='$user_email'";
-                $run_query=mysqli_query($dbcon,$check_email_query);
+    $check_email_query="select * from user_tbl WHERE email='$user_email'";
+    $run_query=mysqli_query($dbcon,$check_email_query);
 
-                if(mysqli_num_rows($run_query)>0)
-                {
-                    echo "<script>alert('Email $user_email is already exist in our database, Please try another one!')</script>";
-                    exit();
-                }
-                echo "ahsfjsak";
+    if(mysqli_num_rows($run_query)>0)
+    {
+        echo "<script>alert('Email $user_email is already exist in our database, Please try another one!')</script>";
+        exit();
+    }
+    echo "ahsfjsak";
 //insert the user into the database.
 
-                $insert_user="insert into user_tbl (FirstName,LastName,email,upassword,phone_number,user_role,address) VALUES ('$user_fname','$user_lname','$user_email',SHA2(CONCAT('$user_email','$user_pass'),512),'$phone','admin','$user_address')";
-                if(mysqli_query($dbcon,$insert_user))
-                {
-                    header('Location: adminDetails.php');
-                }
+    $insert_user="insert into user_tbl (FirstName,LastName,username,email,upassword,phone_number,user_role,address) VALUES ('$user_fname','$user_lname','$user_email','$user_email',SHA2(CONCAT('$user_email','$user_pass'),512),'$phone','admin','$user_address')";
+    if(mysqli_query($dbcon,$insert_user))
+    {
+        header('Location: adminDetails.php');
+    }
 
 
 
-            }
+}
 
-            if(isset($_POST['Update_Admin']))
-            {
-				
-				$id=$_SESSION['id'];
-                $user_fname=mysqli_real_escape_string($dbcon, $_POST['fname_u']);//here getting result from the post array after submitting the form.
-                $user_lname=mysqli_real_escape_string($dbcon, $_POST['lname_u']);
-                $user_address=mysqli_real_escape_string($dbcon, $_POST['address_u']);
-                $phone=mysqli_real_escape_string($dbcon, $_POST['phone_u']);
+if(isset($_POST['Update_Admin']))
+{
 
-                $user_email=mysqli_real_escape_string($dbcon, $_POST['email_u']);//same
+    $id=$_SESSION['id'];
+    $user_fname=mysqli_real_escape_string($dbcon, $_POST['fname_u']);//here getting result from the post array after submitting the form.
+    $user_lname=mysqli_real_escape_string($dbcon, $_POST['lname_u']);
+    $user_address=mysqli_real_escape_string($dbcon, $_POST['address_u']);
+    $phone=mysqli_real_escape_string($dbcon, $_POST['phone_u']);
 
-				echo $user_fname;
-                if($user_fname=='' || $user_lname=='' || $user_address=='')
-                {
-                    //javascript use for input checking
-                    echo"<script>alert('Please enter all the personal details')</script>";
-                    echo"1";
-                    exit();//this use if first is not work then other will not show
-                }
+    $user_email=mysqli_real_escape_string($dbcon, $_POST['email_u']);//same
+
+    echo $user_fname;
+    if($user_fname=='' || $user_lname=='' || $user_address=='')
+    {
+        //javascript use for input checking
+        echo"<script>alert('Please enter all the personal details')</script>";
+        echo"1";
+        exit();//this use if first is not work then other will not show
+    }
 
 
 
-                if($user_email=='')
-                {
-                    echo"<script>alert('Please enter the email')</script>";
-                    echo"3";
-                    exit();
-                }
+    if($user_email=='')
+    {
+        echo"<script>alert('Please enter the email')</script>";
+        echo"3";
+        exit();
+    }
 
-                $insert_user="Update user_tbl set FirstName= '$user_fname', LastName = '$user_lname', email = '$user_email', phone_number = '$phone', address = '$user_address' WHERE PID = $id";
+    $insert_user="Update user_tbl set FirstName= '$user_fname', LastName = '$user_lname', email = '$user_email', phone_number = '$phone', address = '$user_address' WHERE PID = $id";
 
-               //echo '$insert_user';
-				
-                if(mysqli_query($dbcon,$insert_user))
-                {
-					
-					header('Location: adminDetails.php');
-					
-                 
-                }
-            }?>
+    //echo '$insert_user';
+
+    if(mysqli_query($dbcon,$insert_user))
+    {
+
+        header('Location: adminDetails.php');
+
+
+    }
+}?>
 
 <html lang="en">
 <head>
@@ -187,7 +187,7 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
                                 <span>Account Settings</span>
                             </li>
                             <li><a href="#"><i class="halflings-icon user"></i> Profile</a></li>
-                            <li><a href="index.php"><i class="halflings-icon off"></i> Logout</a></li>
+                            <li><a href="logout.php"><i class="halflings-icon off"></i> Logout</a></li>
                         </ul>
                     </li>
                     <!-- end: User Dropdown -->
@@ -205,34 +205,72 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
         <div class="row-fluid">
 
             <!-- start: Main Menu -->
-            <div id="sidebar-left" class="span2">
-                <div class="nav-collapse sidebar-nav">
-                    <ul class="nav nav-tabs nav-stacked main-menu">
-                        <li><a href="index1.html"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
-                        <li>
-                            <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Admin</span></a>
-                            <ul>
-                                <li><a class="submenu" href="addAdmin.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Admin</span></a></li>
-                                <li><a class="submenu" href="adminDetails.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Admins</span></a></li>
+            <?php if(isset($_SESSION['email']) && (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'admin')) : ?>
 
-                            </ul>
+                <div id="sidebar-left" class="span2">
+                    <div class="nav-collapse sidebar-nav">
+                        <ul class="nav nav-tabs nav-stacked main-menu">
+                            <li><a href="Dashboard.php"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="AddMember.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Member</span></a></li>
+                                    <li><a class="submenu" href="members.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Members</span></a></li>
 
-                        </li>
-                        <li><a href="reports.html"><i class="icon-list-alt"></i><span class="hidden-tablet"> Reports</span></a></li>
-                        <li>
-                            <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
-                            <ul>
-                                <li><a class="submenu" href="AddMember.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Member</span></a></li>
-                                <li><a class="submenu" href="members.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Members</span></a></li>
+                                </ul>
 
-                            </ul>
+                            </li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Questions</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="AddQuestion.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Question</span></a></li>
+                                    <li><a class="submenu" href="Questions.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Questions</span></a></li>
 
-                        </li>
-                        <li><a href="file-manager.html"><i class="icon-folder-open"></i><span class="hidden-tablet"> File Manager</span></a></li>
-                        <li><a href="settings.html"><i class="icon-lock"></i><span class="hidden-tablet"> Settings</span></a></li>
-                    </ul>
+                                </ul>
+
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
+
+            <?php elseif(isset($_SESSION['email']) && (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin')) : ?>
+
+                <div id="sidebar-left" class="span2">
+                    <div class="nav-collapse sidebar-nav">
+                        <ul class="nav nav-tabs nav-stacked main-menu">
+                            <li><a href="Dashboard.php"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Admin</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="addAdmin.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Admin</span></a></li>
+                                    <li><a class="submenu" href="adminDetails.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Admins</span></a></li>
+
+                                </ul>
+
+                            </li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="AddMember.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Member</span></a></li>
+                                    <li><a class="submenu" href="members.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Members</span></a></li>
+
+                                </ul>
+
+                            </li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Questions</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="AddQuestion.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Question</span></a></li>
+                                    <li><a class="submenu" href="Questions.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Questions</span></a></li>
+
+                                </ul>
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            <?php endif; ?>
             <!-- end: Main Menu -->
 
             <noscript>
@@ -327,21 +365,13 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
                                             <label class="control-label" for="focusedInput">Address</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' name='address_u' type='text' placeholder='Address' value='$address'>"
+                                                echo "<textarea name='address_u' rows='2' cols='10'>".$address;
+                                                echo "</textarea>"
 
                                                 ?>
                                             </div>
                                         </div>
 
-                                        <div class="control-group">
-                                            <label class="control-label" for="focusedInput">User Role</label>
-                                            <div class="controls">
-                                                <?php
-                                                echo "<input class='input-xlarge uneditable-input' id='focusedInput' type='text' placeholder='User Role' value='$role'>"
-
-                                                ?>
-                                            </div>
-                                        </div>
 
                                         <div class="form-actions">
                                             <input type="submit" name="Update_Admin" class="btn btn-primary" value="Update Admin"/>
@@ -359,7 +389,7 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
 
 
 
-                <?php
+                    <?php
 
                 }
                 else
@@ -410,7 +440,7 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
                                             <label class="control-label" for="focusedInput">Phone</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' name='phone' type='text' placeholder='Phone' >"
+                                                echo "<input class='input-xlarge focused' id='focusedInput' name='phone' type='text' placeholder='Phone' autocomplete='off' >"
 
                                                 ?>
                                             </div>
@@ -420,7 +450,7 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
                                             <label class="control-label" for="focusedInput">Address</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge focused' id='focusedInput' name='address' type='text' placeholder='Address' >"
+                                               echo "<textarea name='address' rows='2' cols='10'></textarea>"
 
                                                 ?>
                                             </div>
@@ -430,7 +460,7 @@ if(!(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin'))
                                             <label class="control-label" for="focusedInput">Password</label>
                                             <div class="controls">
                                                 <?php
-                                                echo "<input class='input-xlarge uneditable-input' id='focusedInput' name='pass' type='text' placeholder='Password' >"
+                                                echo "<input class='input-xlarge focused' id='focusedInput' name='pass' type='password' autocomplete='off'>"
 
                                                 ?>
                                             </div>

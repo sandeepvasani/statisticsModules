@@ -99,34 +99,72 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
         <div class="row-fluid">
 
             <!-- start: Main Menu -->
-            <div id="sidebar-left" class="span2">
-                <div class="nav-collapse sidebar-nav">
-                    <ul class="nav nav-tabs nav-stacked main-menu">
-                        <li><a href="index1.html"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
-                        <li>
-                            <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Admin</span></a>
-                            <ul>
-                                <li><a class="submenu" href="addAdmin.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Admin</span></a></li>
-                                <li><a class="submenu" href="adminDetails.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Admins</span></a></li>
+            <?php if(isset($_SESSION['email']) && (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'admin')) : ?>
 
-                            </ul>
+                <div id="sidebar-left" class="span2">
+                    <div class="nav-collapse sidebar-nav">
+                        <ul class="nav nav-tabs nav-stacked main-menu">
+                            <li><a href="Dashboard.php"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="AddMember.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Member</span></a></li>
+                                    <li><a class="submenu" href="members.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Members</span></a></li>
 
-                        </li>
-                        <li><a href="reports.html"><i class="icon-list-alt"></i><span class="hidden-tablet"> Reports</span></a></li>
-                        <li>
-                            <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
-                            <ul>
-                                <li><a class="submenu" href="AddMember.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Member</span></a></li>
-                                <li><a class="submenu" href="members.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Members</span></a></li>
+                                </ul>
 
-                            </ul>
+                            </li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Questions</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="AddQuestion.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Question</span></a></li>
+                                    <li><a class="submenu" href="Questions.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Questions</span></a></li>
 
-                        </li>
-                        <li><a href="file-manager.html"><i class="icon-folder-open"></i><span class="hidden-tablet"> File Manager</span></a></li>
-                        <li><a href="settings.html"><i class="icon-lock"></i><span class="hidden-tablet"> Settings</span></a></li>
-                    </ul>
+                                </ul>
+
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
+
+            <?php elseif(isset($_SESSION['email']) && (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin')) : ?>
+
+                <div id="sidebar-left" class="span2">
+                    <div class="nav-collapse sidebar-nav">
+                        <ul class="nav nav-tabs nav-stacked main-menu">
+                            <li><a href="Dashboard.php"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Admin</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="addAdmin.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Admin</span></a></li>
+                                    <li><a class="submenu" href="adminDetails.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Admins</span></a></li>
+
+                                </ul>
+
+                            </li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="AddMember.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Member</span></a></li>
+                                    <li><a class="submenu" href="members.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Members</span></a></li>
+
+                                </ul>
+
+                            </li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Questions</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="AddQuestion.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Question</span></a></li>
+                                    <li><a class="submenu" href="Questions.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Questions</span></a></li>
+
+                                </ul>
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            <?php endif; ?>
             <!-- end: Main Menu -->
 
             <noscript>

@@ -102,9 +102,7 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
                 <div id="sidebar-left" class="span2">
                     <div class="nav-collapse sidebar-nav">
                         <ul class="nav nav-tabs nav-stacked main-menu">
-                            <li><a href="index1.html"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
-
-                            <li><a href="reports.html"><i class="icon-list-alt"></i><span class="hidden-tablet"> Reports</span></a></li>
+                            <li><a href="Dashboard.php"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
                             <li>
                                 <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
                                 <ul>
@@ -114,28 +112,34 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
                                 </ul>
 
                             </li>
-                            <li><a href="file-manager.html"><i class="icon-folder-open"></i><span class="hidden-tablet"> File Manager</span></a></li>
-                            <li><a href="settings.html"><i class="icon-lock"></i><span class="hidden-tablet"> Settings</span></a></li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Questions</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="AddQuestion.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Question</span></a></li>
+                                    <li><a class="submenu" href="Questions.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Questions</span></a></li>
+
+                                </ul>
+
+                            </li>
                         </ul>
                     </div>
                 </div>
 
         <?php elseif(isset($_SESSION['email']) && (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'superadmin')) : ?>
 
-                <div id="sidebar-left" class="span2">
+            <div id="sidebar-left" class="span2">
                     <div class="nav-collapse sidebar-nav">
                         <ul class="nav nav-tabs nav-stacked main-menu">
-                            <li><a href="index1.html"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
+                            <li><a href="Dashboard.php"><i class="icon-bar-chart"></i><span class="hidden-tablet"> Dashboard</span></a></li>
                             <li>
                                 <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Admin</span></a>
                                 <ul>
                                     <li><a class="submenu" href="addAdmin.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Admin</span></a></li>
-                                    <li><a class="submenu" href="adminDetails.php"><i class="icon-file-alt"></i><span class="hidden-tablet">View Admins</span></a></li>
+                                    <li><a class="submenu" href="adminDetails.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Admins</span></a></li>
 
                                 </ul>
 
                             </li>
-                            <li><a href="reports.html"><i class="icon-list-alt"></i><span class="hidden-tablet"> Reports</span></a></li>
                             <li>
                                 <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Members</span></a>
                                 <ul>
@@ -145,8 +149,15 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
                                 </ul>
 
                             </li>
-                            <li><a href="file-manager.html"><i class="icon-folder-open"></i><span class="hidden-tablet"> File Manager</span></a></li>
-                            <li><a href="settings.html"><i class="icon-lock"></i><span class="hidden-tablet"> Settings</span></a></li>
+                            <li>
+                                <a class="dropmenu" href="#"><i class="icon-folder-close-alt"></i><span class="hidden-tablet"> Questions</span></a>
+                                <ul>
+                                    <li><a class="submenu" href="AddQuestion.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> Add Question</span></a></li>
+                                    <li><a class="submenu" href="Questions.php"><i class="icon-file-alt"></i><span class="hidden-tablet"> View Questions</span></a></li>
+
+                                </ul>
+
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -204,13 +215,7 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
                             $view_users_query="select * from user_tbl Where user_role = 'admin'";//select query for viewing users.
                             $run=mysqli_query($dbcon,$view_users_query);//here run the sql query.
 
-                            if (isset($_GET["id"])) {
-                                $delete_user="DELETE FROM user_tbl Where PID = ".$_GET['id']."";//select query for deleting user.
-                                $result=mysqli_query($dbcon,$delete_user);//here run the sql query.
-                                // if successfully deleteder
-                                if($result){
-                                    header( 'Location: adminDetails.php' ) ;
-                                }}
+                            
 
 
                             ?>
@@ -230,7 +235,7 @@ if(!$_SESSION['email'] || ($_SESSION['user_role']!='admin' && $_SESSION['user_ro
                                 echo "<td>".$user_lname."</td>";
                                 echo "<td>".$user_email."</td>";
                                 echo "<td>".$phone."</td>";
-                                echo "<td> <a class='btn btn-info' href=addAdmin.php?id=" .$user_Id."><i class=\"halflings-icon white edit\"></i></a>  <a class=\"btn btn-danger\" href=adminDetails.php?id=".$user_Id." onclick=\"return confirm('Are you sure?')\"><i class=\"halflings-icon white trash\"></i></a></td>";
+                                echo "<td> <a class='btn btn-info' href=addAdmin.php?id=" .$user_Id."><i class=\"halflings-icon white edit\"></i></a>  <a class=\"btn btn-danger\" href=delete_Admin.php?id=".$user_Id." onclick=\"return confirm('Are you sure?')\"><i class=\"halflings-icon white trash\"></i></a></td>";
                                 echo "</tr>";
                             }
                             ?>
