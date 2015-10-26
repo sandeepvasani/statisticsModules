@@ -1,8 +1,65 @@
 <!DOCTYPE html>
-
 <?php
 include('dbconnect.php');
+session_start();
+$totalquestion= $_SESSION['Question_Total'];
+?>
+<?php
 
+if(!isset($_SESSION["ques_asked"]) )
+{
+	
+	$_SESSION["right_ans"]=0;
+	$_SESSION["ques_asked"]=0;
+	$_SESSION['ans']='';
+	
+	$numbers=range(1,$totalquestion);
+	shuffle($numbers);
+	$numbers=array_slice($numbers,0,$totalquestion);
+	$_SESSION["numbers"]=$numbers;
+//print_r($numbers);
+}
+else
+{
+	if(isset($_POST['Next']))
+{
+	 if($_SESSION['ans']==$_POST['answer'])
+	{
+		$_SESSION['right_ans']+=1;
+		$_SESSION['ans']='';
+	//	echo "right";
+	} 
+	$_SESSION["ques_asked"]+=1;
+	header('Location: TestDifficult.php');
+}
+		
+}
+
+	if($_SESSION['ques_asked']>$totalquestion-1)
+	{
+		//session_destroy();
+		//$_SESSION["ques_asked"]=0;
+		unset($_SESSION['ques_asked']);
+		header('Location: result.php');
+		//echo $_SESSION['right_ans'];
+				
+		//exit;
+		
+	
+	}
+
+$svar= $_SESSION["ques_asked"];
+//echo $svar;
+//echo $_SESSION["numbers"][$svar];
+$ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$svar]. " AND Question_Category='median'";
+    $result=mysqli_query($dbcon,$ques_query);
+	
+    if(mysqli_num_rows($result))
+    {
+		$row = mysqli_fetch_assoc($result);
+		$_SESSION['ans']=$row['Answer'];
+	
+	}
 ?>
 <html lang="en">
 <head>
@@ -41,69 +98,6 @@ include('dbconnect.php');
 	<link rel="shortcut icon" href="img/favicon.ico">
 	<!-- end: Favicon -->		
 </head>
-
-<?php
-
-if(!isset($_SESSION["ques_asked"]) )
-{
-	
-	$_SESSION["right_ans"]=0;
-	$_SESSION["ques_asked"]=0;
-	$_SESSION['ans']='';
-	
-	$numbers=range(1,5);
-	shuffle($numbers);
-	$numbers=array_slice($numbers,0,5);
-	$_SESSION["numbers"]=$numbers;
-//print_r($numbers);
-}
-else
-{
-	if(isset($_POST['Next']))
-{
-	 if($_SESSION['ans']==$_POST['answer'])
-	{
-		$_SESSION['right_ans']+=1;
-		$_SESSION['ans']='';
-	//	echo "right";
-	} 
-	$_SESSION["ques_asked"]+=1;
-	header('Location: test.php');
-}
-	
-	
-	
-}
-
-	if($_SESSION['ques_asked']>4)
-	{
-		//session_destroy();
-		//$_SESSION["ques_asked"]=0;
-		header('Location: result.php');
-		unset($_SESSION['ques_asked']);
-		
-		//echo $_SESSION['right_ans'];
-				
-		//exit;
-		
-	
-	}
-
-
-$svar= $_SESSION["ques_asked"];
-//echo $svar;
-//echo $_SESSION["numbers"][$svar];
-$ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$svar]. " AND Question_Category='median'";
-    $result=mysqli_query($dbcon,$ques_query);
-	
-    if(mysqli_num_rows($result))
-    {
-		$row = mysqli_fetch_assoc($result);
-		$_SESSION['ans']=$row['Answer'];
-	
-	}
-?>
-
 <body>
 		<!-- start: Header -->
 	<div class="navbar">
@@ -171,7 +165,7 @@ $ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$s
 				<div id="cardPile"> 
 				<?php 
 				
-				$numbers=explode(",",$row['question']);
+				$numbers=explode(",",$row['Question_Desc']);
 				
 				for($i=0;$i<count($numbers);$i++)
 				{
@@ -182,7 +176,7 @@ $ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$s
 				
 				</div>
 				<hr>
-				
+				<form method="post" action="TestDifficult.php">
 				<div class="pagination pagination-centered">
 						  <ul>
 							
@@ -195,7 +189,7 @@ $ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$s
 							</li>
 						  </ul>
 						</div>  
-								
+					</form>			
 			</div><!--/row-->
 
 			

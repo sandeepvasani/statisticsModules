@@ -1,5 +1,16 @@
 <!DOCTYPE html>
+<?php
+include('dbconnect.php');
+session_start();
+if(!$_SESSION['email'])
+{
+    header('Location: index.php');//redirect to login page to secure the welcome page without login access.
+	exit;
+}
 
+
+$_SESSION['Question_Category']=$_GET['qtype'];
+?>
 <html lang="en">
 <head>
 	
@@ -60,7 +71,7 @@
 						<li class="dropdown">
 							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 								<i class="halflings-icon white user"></i> <?php
-                            echo "your email"?>
+                            echo $_SESSION['email']; ?>
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
@@ -107,7 +118,7 @@
 					<div class="number">Easy</div>
 					
 					<div class="footer">
-						<a href="#"> Choose</a>
+						<a href="chooseQuestions.php?difficulty=easy"> Choose</a>
 					</div>	
 				</div>
 				
@@ -116,7 +127,7 @@
 					<div class="number">Difficult</div>
 					
 					<div class="footer">
-						<a href="#"> Choose</a>
+						<a href="chooseQuestions.php?difficulty=difficult"> Choose</a>
 					</div>	
 				</div>
 								

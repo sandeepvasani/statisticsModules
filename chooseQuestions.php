@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-
 <?php
 include('dbconnect.php');
+session_start();
+if(!$_SESSION['email'])
+{
+    header('Location: index.php');//redirect to login page to secure the welcome page without login access.
+	exit;
+}
 
+
+$_SESSION['Question_Difficulty']=$_GET['difficulty'];
 ?>
 <html lang="en">
 <head>
 	
 	<!-- start: Meta -->
 	<meta charset="utf-8">
-	<title>Statistics Modules</title>
+	<title>Statistics Modules Dashboard</title>
 	<meta name="description" content="Statistic Modules Dashboard">
 	<!-- end: Meta -->
 	
@@ -19,7 +26,6 @@ include('dbconnect.php');
 	
 	<!-- start: CSS -->
 	<link id="bootstrap-style" href="css/bootstrap.min.css" rel="stylesheet">
-	<link id="dragtest-style" href="css/style_test.css" rel="stylesheet">
 	<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
 	<link id="base-style" href="css/style.css" rel="stylesheet">
 	<link id="base-style-responsive" href="css/style-responsive.css" rel="stylesheet">
@@ -42,67 +48,7 @@ include('dbconnect.php');
 	<!-- end: Favicon -->		
 </head>
 
-<?php
 
-if(!isset($_SESSION["ques_asked"]) )
-{
-	
-	$_SESSION["right_ans"]=0;
-	$_SESSION["ques_asked"]=0;
-	$_SESSION['ans']='';
-	
-	$numbers=range(1,5);
-	shuffle($numbers);
-	$numbers=array_slice($numbers,0,5);
-	$_SESSION["numbers"]=$numbers;
-//print_r($numbers);
-}
-else
-{
-	if(isset($_POST['Next']))
-{
-	 if($_SESSION['ans']==$_POST['answer'])
-	{
-		$_SESSION['right_ans']+=1;
-		$_SESSION['ans']='';
-	//	echo "right";
-	} 
-	$_SESSION["ques_asked"]+=1;
-	header('Location: test.php');
-}
-	
-	
-	
-}
-
-	if($_SESSION['ques_asked']>4)
-	{
-		//session_destroy();
-		//$_SESSION["ques_asked"]=0;
-		header('Location: result.php');
-		unset($_SESSION['ques_asked']);
-		
-		//echo $_SESSION['right_ans'];
-				
-		//exit;
-		
-	
-	}
-
-
-$svar= $_SESSION["ques_asked"];
-//echo $svar;
-//echo $_SESSION["numbers"][$svar];
-$ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$svar]. " AND Question_Category='median'";
-    $result=mysqli_query($dbcon,$ques_query);
-	
-    if(mysqli_num_rows($result))
-    {
-		$row = mysqli_fetch_assoc($result);
-		$_SESSION['ans']=$row['Answer'];
-	
-	}
-?>
 
 <body>
 		<!-- start: Header -->
@@ -124,7 +70,8 @@ $ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$s
 						<!-- start: User Dropdown -->
 						<li class="dropdown">
 							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-								<i class="halflings-icon white user"></i> 
+								<i class="halflings-icon white user"></i> <?php
+                            echo $_SESSION['email']; ?>
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
@@ -145,9 +92,8 @@ $ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$s
 	</div>
 	<!-- start: Header -->
 	
-
-			   
-	<div class="row-fluid">
+		
+		<div class="row-fluid">
 				
 			<!-- start: Main Menu -->
 			
@@ -161,40 +107,29 @@ $ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$s
 			</noscript>
 			
 			<!-- start: Content -->
-			<hr>
-			<div class="span11" style="min-height: 699px;">
+			<div id="content_choose_diff" class="span11" style="min-height: 699px;">
 			
 					
 			
 			<div class="row-fluid">	
 			
-				<div id="cardPile"> 
-				<?php 
-				
-				$numbers=explode(",",$row['Question_Desc']);
-				
-				for($i=0;$i<count($numbers);$i++)
-				{
-					echo "<div id=\"card".$numbers[$i]."\">".$numbers[$i]."</div>";
+				<div class="span3 statbox purple" onTablet="span6" onDesktop="span3">
 					
-				}
-				?>
-				
+					<div class="number">10</div>
+					
+					<div class="footer">
+						<a href="testRedirect.php?qnos=10"> Choose</a>
+					</div>	
 				</div>
-				<hr>
 				
-				<div class="pagination pagination-centered">
-						  <ul>
-							
-							<li>
-							<input type="text" placeholder="Enter Answer" >
-							</li>
-							<hr>
-							<li>
-							<button class="btn btn-large btn-info" type="submit" name="Next" value="Next">Next</button>
-							</li>
-						  </ul>
-						</div>  
+				<div class="span3 statbox green" onTablet="span6" onDesktop="span3">
+				
+					<div class="number">20</div>
+					
+					<div class="footer">
+						<a href="testRedirect.php?qnos=20"> Choose</a>
+					</div>	
+				</div>
 								
 			</div><!--/row-->
 
@@ -202,7 +137,11 @@ $ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$s
 
 			
 	</div><!--/.fluid-container-->
-	</div>	
+	</div>
+	
+			<!-- end: Content -->
+		
+		
 	<div class="modal hide fade" id="myModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
@@ -230,31 +169,7 @@ $ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$s
 	
 	<!-- start: JavaScript-->
 	
-	<script language="javascript" type="text/javascript">
-<!--
-
-sec=0
-min=5
-function display(){ 
- if (sec<=0){ 
-    sec=59 
-    min-=1 
- } 
-if (min<=-1){ 
-    sec=0 
-    min+=1
- 
- }
-  else 
-    sec-=1 
-    if (sec <= 9)
-    sec="0"+sec
-    document.getElementById("time").innerHTML = "Time: "+min+"."+sec; 
-    setTimeout("display()",1000) 
-} 
-display()
-// -->
-</script>
+	
 
 		<script src="js/jquery-1.9.1.min.js"></script>
 	<script src="js/jquery-migrate-1.0.0.min.js"></script>
@@ -310,7 +225,6 @@ display()
 		<script src="js/retina.js"></script>
 
 		<script src="js/custom.js"></script>
-		<script src="js/dragnumber.js"></script>
 	<!-- end: JavaScript-->
 	
 </body>

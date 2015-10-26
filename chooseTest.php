@@ -1,5 +1,13 @@
 <!DOCTYPE html>
-
+<?php
+include('dbconnect.php');
+session_start();
+if(!$_SESSION['email'])
+{
+    header('Location: index.php');//redirect to login page to secure the welcome page without login access.
+	exit;
+}
+?>
 <html lang="en">
 <head>
 	
@@ -60,7 +68,7 @@
 						<li class="dropdown">
 							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 								<i class="halflings-icon white user"></i> <?php
-                            echo "your email"?>
+                            echo $_SESSION['email']; ?>
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
@@ -107,7 +115,7 @@
 					<div class="number">Mean</div>
 					
 					<div class="footer">
-						<a href="#"> Choose</a>
+						<a href="chooseDifficulty.php?qtype=mean"> Choose</a>
 					</div>	
 				</div>
 				
@@ -116,7 +124,7 @@
 					<div class="number">Median</div>
 					
 					<div class="footer">
-						<a href="#"> Choose</a>
+						<a href="chooseDifficulty.php?qtype=median"> Choose</a>
 					</div>	
 				</div>
 				
@@ -125,7 +133,7 @@
 					<div class="number">Mode</div>
 					
 					<div class="footer">
-						<a href="#"> Choose</a>
+						<a href="chooseDifficulty.php?qtype=mode"> Choose</a>
 					</div>	
 				</div>
 				
@@ -134,7 +142,7 @@
 					<div class="number">Probability</div>
 					
 					<div class="footer">
-						<a href="#"> Choose</a>
+						<a href="chooseDifficulty.php?qtype=probability"> Choose</a>
 					</div>	
 				</div>	
 				
@@ -145,7 +153,7 @@
 					<div class="number">Histogram</div>
 					
 					<div class="footer">
-						<a href="#"> Choose</a>
+						<a href="chooseDifficulty.php?qtype=histogram"> Choose</a>
 					</div>	
 				</div>
 			</div>
