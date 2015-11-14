@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <?php
+ob_start();
 include('dbconnect.php');
 session_start();
 if(!$_SESSION['email'])
@@ -7,14 +8,69 @@ if(!$_SESSION['email'])
     header('Location: index.php');//redirect to login page to secure the welcome page without login access.
 	exit;
 }
-$_SESSION['Question_Category']=$_GET['qtype'];
+$totalquestion= $_SESSION['Question_Total'];
+?>
+<?php
+
+if(!isset($_SESSION["ques_asked"]) )
+{
+	
+	$_SESSION["right_ans"]=0;
+	$_SESSION["ques_asked"]=0;
+	$_SESSION['ans']='';
+	
+	$numbers=range(1,$totalquestion);
+	shuffle($numbers);
+	$numbers=array_slice($numbers,0,$totalquestion);
+	$_SESSION["numbers"]=$numbers;
+//print_r($numbers);
+}
+else
+{
+	if(isset($_POST['Next']))
+{
+	 if($_SESSION['ans']==$_POST['answer'])
+	{
+		$_SESSION['right_ans']+=1;
+		$_SESSION['ans']='';
+	//	echo "right";
+	} 
+	$_SESSION["ques_asked"]+=1;
+	header('Location: testDifficult.php');
+}
+		
+}
+
+	if($_SESSION['ques_asked']>$totalquestion-1)
+	{
+		//session_destroy();
+		//$_SESSION["ques_asked"]=0;
+		unset($_SESSION['ques_asked']);
+		header('Location: result.php');
+		//echo $_SESSION['right_ans'];
+				
+		//exit;	
+	}
+
+$svar= $_SESSION["ques_asked"];
+//echo $svar;
+//echo $_SESSION["numbers"][$svar];
+$ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$svar]. " AND Question_Category='median'";
+    $result=mysqli_query($dbcon,$ques_query);
+	
+    if(mysqli_num_rows($result))
+    {
+		$row = mysqli_fetch_assoc($result);
+		$_SESSION['ans']=$row['Answer'];
+	
+	}
 ?>
 <html lang="en">
 <head>
 	
 	<!-- start: Meta -->
 	<meta charset="utf-8">
-	<title>Statistics Modules Dashboard</title>
+	<title>Statistics Modules</title>
 	<meta name="description" content="Statistic Modules Dashboard">
 	<!-- end: Meta -->
 	
@@ -24,6 +80,7 @@ $_SESSION['Question_Category']=$_GET['qtype'];
 	
 	<!-- start: CSS -->
 	<link id="bootstrap-style" href="css/bootstrap.min.css" rel="stylesheet">
+	<link id="dragtest-style" href="css/style_test.css" rel="stylesheet">
 	<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
 	<link id="base-style" href="css/style.css" rel="stylesheet">
 	<link id="base-style-responsive" href="css/style-responsive.css" rel="stylesheet">
@@ -45,9 +102,6 @@ $_SESSION['Question_Category']=$_GET['qtype'];
 	<link rel="shortcut icon" href="img/favicon.ico">
 	<!-- end: Favicon -->		
 </head>
-
-
-
 <body>
 		<!-- start: Header -->
 	<div class="navbar">
@@ -68,7 +122,8 @@ $_SESSION['Question_Category']=$_GET['qtype'];
 						<!-- start: User Dropdown -->
 						<li class="dropdown">
 							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-								<i class="halflings-icon white user"></i> <?php
+								<i class="halflings-icon white user"></i>
+								<?php
                             echo $_SESSION['email']; ?>
 								<span class="caret"></span>
 							</a>
@@ -90,8 +145,9 @@ $_SESSION['Question_Category']=$_GET['qtype'];
 	</div>
 	<!-- start: Header -->
 	
-		
-		<div class="row-fluid">
+
+			   
+	<div class="row-fluid">
 				
 			<!-- start: Main Menu -->
 			
@@ -105,41 +161,67 @@ $_SESSION['Question_Category']=$_GET['qtype'];
 			</noscript>
 			
 			<!-- start: Content -->
-			<div id="content_choose_diff" class="span11" style="min-height: 699px;">
+			<hr>
+			<div class="span11" style="min-height: 699px;">
 			
 					
 			
 			<div class="row-fluid">	
 			
-				<div class="span3 statbox purple" onTablet="span6" onDesktop="span3">
-					
-					<div class="number">Easy</div>
-					
-					<div class="footer">
-						<a href="chooseQuestions.php?difficulty=easy"> Choose</a>
-					</div>	
-				</div>
+				<div id="cardPile"> 
+				<?php 
 				
-				<div class="span3 statbox green" onTablet="span6" onDesktop="span3">
+				$numbers=explode(",",$row['Question_Desc']);
 				
-					<div class="number">Difficult</div>
+				for($i=0;$i<count($numbers);$i++)
+				{
+					echo "<div id=\"card".$numbers[$i]."\">".$numbers[$i]."</div>";
 					
-					<div class="footer">
-						<a href="chooseQuestions.php?difficulty=difficult"> Choose</a>
-					</div>	
+				}
+				?>
+				
 				</div>
-								
+				<hr>
+				<form method="post" action="testEasy.php">
+								  <div class="control-group">
+								<div class="controls">
+								  <label class="radio">
+									<input type="radio" name="optionsRadios" id="optionsRadios1" value="option1">
+									Option one
+								  </label>
+								  <div style="clear:both"></div>
+								  <label class="radio">
+									<input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+									Option two
+								  </label>
+								   <div style="clear:both"></div>
+								  <label class="radio">
+									<input type="radio" name="optionsRadios" id="optionsRadios3" value="option3">
+									Option three
+								  </label>
+								   <div style="clear:both"></div>
+								  <label class="radio">
+									<input type="radio" name="optionsRadios" id="optionsRadios4" value="option4">
+									Option four
+								  </label>
+								</div>
+							  </div>
+				<div class="pagination pagination-centered">
+				
+						  <ul>
+							<li>
+							<button class="btn btn-large btn-info" type="submit" name="Next" value="Next">Next</button>
+							</li>
+						  </ul>
+						</div>  
+				</form>			
 			</div><!--/row-->
 
 			
 
 			
 	</div><!--/.fluid-container-->
-	</div>
-	
-			<!-- end: Content -->
-		
-		
+	</div>	
 	<div class="modal hide fade" id="myModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
@@ -167,7 +249,31 @@ $_SESSION['Question_Category']=$_GET['qtype'];
 	
 	<!-- start: JavaScript-->
 	
-	
+	<script language="javascript" type="text/javascript">
+<!--
+
+sec=0
+min=5
+function display(){ 
+ if (sec<=0){ 
+    sec=59 
+    min-=1 
+ } 
+if (min<=-1){ 
+    sec=0 
+    min+=1
+ 
+ }
+  else 
+    sec-=1 
+    if (sec <= 9)
+    sec="0"+sec
+    document.getElementById("time").innerHTML = "Time: "+min+"."+sec; 
+    setTimeout("display()",1000) 
+} 
+display()
+// -->
+</script>
 
 		<script src="js/jquery-1.9.1.min.js"></script>
 	<script src="js/jquery-migrate-1.0.0.min.js"></script>
@@ -223,6 +329,7 @@ $_SESSION['Question_Category']=$_GET['qtype'];
 		<script src="js/retina.js"></script>
 
 		<script src="js/custom.js"></script>
+		<script src="js/dragnumber.js"></script>
 	<!-- end: JavaScript-->
 	
 </body>

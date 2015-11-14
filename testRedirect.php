@@ -1,4 +1,5 @@
 <?php
+ob_start();
 include('dbconnect.php');
 session_start();
 if(!$_SESSION['email'])

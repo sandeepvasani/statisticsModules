@@ -1,7 +1,7 @@
 <?php
+ob_start();
 include("dbconnect.php");
 session_start();//session starts here
-
 ?>
 <?php
 

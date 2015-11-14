@@ -1,8 +1,6 @@
-
 <?php
 include("dbconnect.php");
 session_start();//session starts here
-
 ?>
 
 <!doctype HTML>
@@ -22,7 +20,6 @@ session_start();//session starts here
 <!-- multistep form -->
 
 <form id="msform" role="form" method="post" action="changePassword.php">
-
     <!-- progressbar -->
     <!-- fieldsets -->
     <fieldset>
@@ -30,9 +27,7 @@ session_start();//session starts here
         <div class="fs-error"></div>
         <input type="password" name="password" id="password" placeholder="Password" />
         <input type="password" name="password_again" id="password_again" placeholder="Type again" />
-
         <input type="submit" id="Change" name="Change" value="Change Password" />
-
     </fieldset>
 
 </form>
@@ -48,7 +43,7 @@ if(isset($_POST['Change'])) {
     $pass1 = mysqli_real_escape_string($dbcon, $_POST['password']);
     $pass2 = mysqli_real_escape_string($dbcon, $_POST['password_again']);
     $user = $_SESSION['username'];
-    echo $user;
+   // echo $user;
     $query2 = "Update user_tbl SET upassword = SHA2(CONCAT('$user','$pass1'),512) WHERE username = '$user'";
     if(!$query2){
         die("Invalid query: " .mysqli_error());
@@ -56,7 +51,7 @@ if(isset($_POST['Change'])) {
 
 
 
-    echo 'still updating';
+   // echo 'still updating';
     if(mysqli_query($dbcon,$query2))
     {
    //     header('Location: index.php');
@@ -89,25 +84,12 @@ if(isset($_POST['Change'])) {
         }
         $delta = 21600;
 
-        echo 'Updating';
+       // echo 'Updating';
         // Check to see if link has expired
         if ($_SERVER["REQUEST_TIME"] - $tstamp > $delta) {
             throw new Exception("Token has expired.");
         }
         unset($_GET['token']);
     }
-
 // verify token
-
-
-    ?>
-
-
-
-
-
-<?php
-
-
-
 ?>

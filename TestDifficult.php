@@ -1,7 +1,12 @@
-<!DOCTYPE html>
 <?php
+ob_start();
 include('dbconnect.php');
 session_start();
+if(!$_SESSION['email'])
+{
+    header('Location: index.php');//redirect to login page to secure the welcome page without login access.
+	exit;
+}
 $totalquestion= $_SESSION['Question_Total'];
 ?>
 <?php
@@ -30,7 +35,7 @@ else
 	//	echo "right";
 	} 
 	$_SESSION["ques_asked"]+=1;
-	header('Location: TestDifficult.php');
+	header('Location: testDifficult.php');
 }
 		
 }
@@ -43,9 +48,7 @@ else
 		header('Location: result.php');
 		//echo $_SESSION['right_ans'];
 				
-		//exit;
-		
-	
+		//exit;	
 	}
 
 $svar= $_SESSION["ques_asked"];
@@ -118,7 +121,9 @@ $ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$s
 						<!-- start: User Dropdown -->
 						<li class="dropdown">
 							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-								<i class="halflings-icon white user"></i> 
+								<i class="halflings-icon white user"></i>
+								<?php
+                            echo $_SESSION['email']; ?>
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
@@ -176,7 +181,7 @@ $ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$s
 				
 				</div>
 				<hr>
-				<form method="post" action="TestDifficult.php">
+				<form method="post" action="testDifficult.php">
 				<div class="pagination pagination-centered">
 						  <ul>
 							
