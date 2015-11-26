@@ -1,4 +1,84 @@
-<!DOCTYPE html>
+<?php
+session_start();
+include('dbconnect.php');
+if(!$_SESSION['email'])
+{
+    header('Location: index.php');//redirect to login page to secure the welcome page without login access.
+	exit;
+}
+//
+$_SESSION['result_displayed']=1;
+//current result
+if($_SESSION['Question_Category']=="mean")
+{
+	$median_percentage=0;
+	$mode_percentage=0;
+	$probability_percentage=0;
+	$histogram_percentage=0;
+	$mean_percentage=$_SESSION['right_ans']*100/$_SESSION['Question_Total'];
+}
+if($_SESSION['Question_Category']=="median")
+{
+	
+	$median_percentage=$_SESSION['right_ans']*100/$_SESSION['Question_Total'];
+	$mode_percentage=0;
+	$probability_percentage=0;
+	$histogram_percentage=0;
+	$mean_percentage=0;
+	
+}
+if($_SESSION['Question_Category']=="mode")
+{
+	$median_percentage=0;
+	$mode_percentage=$_SESSION['right_ans']*100/$_SESSION['Question_Total'];
+	$probability_percentage=0;
+	$histogram_percentage=0;
+	$mean_percentage=0;
+}
+if($_SESSION['Question_Category']=="probability")
+{
+	$median_percentage=0;
+	$mode_percentage=0;
+	$probability_percentage=$_SESSION['right_ans']*100/$_SESSION['Question_Total'];
+	$histogram_percentage=0;
+	$mean_percentage=0;
+}
+if($_SESSION['Question_Category']=="histogram")
+{
+	$median_percentage=0;
+	$mode_percentage=0;
+	$probability_percentage=0;
+	$histogram_percentage=$_SESSION['right_ans']*100/$_SESSION['Question_Total'];
+	$mean_percentage=0;
+}
+//
+
+$email=$_SESSION['email'];
+$colupdate=$_SESSION['Question_Difficulty'].$_SESSION['Question_Category'];
+$total=$_SESSION['Question_Category']."Total";
+$rightans=$_SESSION['right_ans'];
+$totalquestion=$_SESSION['Question_Total'];
+//make the email field in the database unique.
+//make default value of all colunms as null except index and email.
+//$ques_query="INSERT INTO `result`(`Email`, `EasyMean`, `EasyMedian`, `EasyMode`, `EasyHistogram`, `EasyProbability`, `HardMean`, `HardMedian`, `HardMode`, `HardHistogram`, `HardProbabilty`, `Percentage`, `Percentile`) VALUES('$_SESSION['email']',) on duplicate key update EasyMean=EasyMean+'$_SESSION['right_ans']'";
+$ques_query="INSERT INTO result (Email,$colupdate,$total) VALUES ('$email','$rightans','$totalquestion') on duplicate key update ".$colupdate."=".$colupdate."+".$_SESSION['right_ans'].",".$total."=".$total."+".$_SESSION['Question_Total'];
+$result=mysqli_query($dbcon,$ques_query);
+
+
+$query="select * from result";
+ $result_rows=mysqli_query($dbcon,$query);
+	
+    if(mysqli_num_rows($result_rows))
+    {
+		$row = mysqli_fetch_assoc($result_rows);
+	
+	$overall_median_percentage=($row['MedianTotal']==0)?0:($row['EasyMedian']+$row['HardMedian'])*100/$row['MedianTotal'];
+	$overall_mode_percentage=($row['ModeTotal']==0)?0:($row['EasyMode']+$row['HardMode'])*100/$row['ModeTotal'];
+	$overall_probability_percentage=($row['ProbabilityTotal']==0)?0:($row['EasyProbability']+$row['HardProbabilty'])*100/$row['ProbabilityTotal'];
+	$overall_histogram_percentage=($row['HistogramTotal']==0)?0:($row['EasyHistogram']+$row['HardHistogram'])*100/$row['HistogramTotal'];
+	$overall_mean_percentage=($row['MeanTotal']==0)?0:($row['EasyMean']+$row['HardMean'])*100/$row['MeanTotal'];
+}
+?>
 
 <html lang="en">
 <head>
@@ -60,7 +140,7 @@
 						<li class="dropdown">
 							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 								<i class="halflings-icon white user"></i> <?php
-                            echo "your email"?>
+                            echo $_SESSION['email']; ?>
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
@@ -107,21 +187,25 @@
 					</div>
 					<div class="box-content">
 						<ul class="skill-bar">
+						<li>
+				            	<h5>Mean ( <?php echo $mean_percentage;?>% )</h5>
+				            	<div class="meter purple"><span style="width: <?php echo $mean_percentage*11.32;?>px; background: rgb(255, 196, 13);"></span></div><!-- Edite width here -->
+				          	</li>
 				        	<li>
-				            	<h5>Median ( 40% )</h5>
-				            	<div class="meter yellow"><span style="width: 400px; background: rgb(255, 196, 13);"></span></div><!-- Edite width here -->
+				            	<h5>Median ( <?php echo $median_percentage;?>% )</h5>
+				            	<div class="meter yellow"><span style="width: <?php echo $median_percentage*11.32;?>px; background: rgb(255, 196, 13);"></span></div><!-- Edite width here -->
 				          	</li>
 				          	<li>
-				            	<h5>Mode ( 80% )</h5>
-				            	<div class="meter blue"><span style="width: 800px; background: rgb(45, 137, 239);"></span></div><!-- Edite width here -->
+				            	<h5>Mode ( <?php echo $mode_percentage;?>% )</h5>
+				            	<div class="meter blue"><span style="width: <?php echo $mode_percentage*11.32;?>px; background: rgb(45, 137, 239);"></span></div><!-- Edite width here -->
 				          	</li>
 				          	<li>
-				            	<h5>Probability ( 100% )</h5>
-				            	<div class="meter pink"><span style="width: 1000px; background: rgb(159, 0, 167);"></span></div><!-- Edite width here -->
+				            	<h5>Probability ( <?php echo $probability_percentage;?>% )</h5>
+				            	<div class="meter pink"><span style="width: <?php echo $probability_percentage*11.32;?>px; background: rgb(159, 0, 167);"></span></div><!-- Edite width here -->
 				          	</li>
 				          	<li>
-				            	<h5>Histogram ( 60% )</h5>
-				            	<div class="meter green"><span style="width: 600px; background: rgb(0, 163, 0);"></span></div><!-- Edite width here -->
+				            	<h5>Histogram ( <?php echo $histogram_percentage;?>% )</h5>
+				            	<div class="meter green"><span style="width: <?php echo $histogram_percentage*11.32;?>px; background: rgb(0, 163, 0);"></span></div><!-- Edite width here -->
 				          	</li>
 				      	</ul>
 					</div>	
@@ -137,21 +221,25 @@
 					</div>
 					<div class="box-content">
 						<ul class="skill-bar">
+							<li>
+				            	<h5>Mean ( <?php echo $overall_mean_percentage;?>% )</h5>
+				            	<div class="meter purple"><span style="width: <?php echo $overall_mean_percentage*11.32;?>px; background: rgb(255, 196, 13);"></span></div><!-- Edite width here -->
+				          	</li>
 				        	<li>
-				            	<h5>Median ( 40% )</h5>
-				            	<div class="meter yellow"><span style="width: 400px; background: rgb(255, 196, 13);"></span></div><!-- Edite width here -->
+				            	<h5>Median ( <?php echo $overall_median_percentage;?>% )</h5>
+				            	<div class="meter yellow"><span style="width: <?php echo $overall_median_percentage*11.32;?>px; background: rgb(255, 196, 13);"></span></div><!-- Edite width here -->
 				          	</li>
 				          	<li>
-				            	<h5>Mode ( 80% )</h5>
-				            	<div class="meter blue"><span style="width: 800px; background: rgb(45, 137, 239);"></span></div><!-- Edite width here -->
+				            	<h5>Mode ( <?php echo $overall_mode_percentage;?>% )</h5>
+				            	<div class="meter blue"><span style="width: <?php echo $overall_mode_percentage*11.32;?>px; background: rgb(45, 137, 239);"></span></div><!-- Edite width here -->
 				          	</li>
 				          	<li>
-				            	<h5>Probability ( 100% )</h5>
-				            	<div class="meter pink"><span style="width: 1000px; background: rgb(159, 0, 167);"></span></div><!-- Edite width here -->
+				            	<h5>Probability ( <?php echo $overall_probability_percentage;?>% )</h5>
+				            	<div class="meter pink"><span style="width: <?php echo $overall_probability_percentage*11.32;?>px; background: rgb(159, 0, 167);"></span></div><!-- Edite width here -->
 				          	</li>
 				          	<li>
-				            	<h5>Histogram ( 60% )</h5>
-				            	<div class="meter green"><span style="width: 600px; background: rgb(0, 163, 0);"></span></div><!-- Edite width here -->
+				            	<h5>Histogram ( <?php echo $overall_histogram_percentage;?>% )</h5>
+				            	<div class="meter green"><span style="width: <?php echo $overall_histogram_percentage*11.32;?>px; background: rgb(0, 163, 0);"></span></div><!-- Edite width here -->
 				          	</li>
 				      	</ul>
 					</div>	

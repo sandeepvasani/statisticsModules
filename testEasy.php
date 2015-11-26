@@ -8,7 +8,13 @@ if(!$_SESSION['email'])
     header('Location: index.php');//redirect to login page to secure the welcome page without login access.
 	exit;
 }
-$totalquestion= $_SESSION['Question_Total'];
+
+if(isset($_SESSION['result_displayed']))
+{
+    header('Location: chooseTest.php');//redirect to login page to secure the welcome page without login access.
+	exit;
+}
+$question_to_ask=$_SESSION['Question_Total'];
 ?>
 <?php
 
@@ -18,10 +24,23 @@ if(!isset($_SESSION["ques_asked"]) )
 	$_SESSION["right_ans"]=0;
 	$_SESSION["ques_asked"]=0;
 	$_SESSION['ans']='';
+		$getfirst_query="select * from ".$_SESSION['Question_Difficulty']."_".$_SESSION['Question_Category']." order by QuestionID asc limit 1"; 
+		$count_query="select * from ".$_SESSION['Question_Difficulty']."_".$_SESSION['Question_Category'];              
+
+	if($firstrecord=mysqli_query($dbcon,$getfirst_query))
+	{
+		$first_row = mysqli_fetch_assoc($firstrecord);
+	}
+	  
+  if($count_result=mysqli_query($dbcon,$count_query))
+	{
+		$totalquestion=mysqli_num_rows($count_result);
+	}
+
 	
-	$numbers=range(1,$totalquestion);
+	$numbers=range(intval($first_row['QuestionID']),$totalquestion+intval($first_row['QuestionID'])-1);
 	shuffle($numbers);
-	$numbers=array_slice($numbers,0,$totalquestion);
+	$numbers=array_slice($numbers,0,$question_to_ask);
 	$_SESSION["numbers"]=$numbers;
 //print_r($numbers);
 }
@@ -29,19 +48,22 @@ else
 {
 	if(isset($_POST['Next']))
 {
+	
 	 if($_SESSION['ans']==$_POST['answer'])
 	{
+		
 		$_SESSION['right_ans']+=1;
 		$_SESSION['ans']='';
 	//	echo "right";
 	} 
 	$_SESSION["ques_asked"]+=1;
-	header('Location: testDifficult.php');
+	header('Location: testEasy.php');
+	
 }
 		
 }
 
-	if($_SESSION['ques_asked']>$totalquestion-1)
+	if($_SESSION['ques_asked']>$question_to_ask-1)
 	{
 		//session_destroy();
 		//$_SESSION["ques_asked"]=0;
@@ -55,14 +77,15 @@ else
 $svar= $_SESSION["ques_asked"];
 //echo $svar;
 //echo $_SESSION["numbers"][$svar];
-$ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$svar]. " AND Question_Category='median'";
+$ques_query="select * from ".$_SESSION['Question_Difficulty']."_".$_SESSION['Question_Category']." WHERE QuestionID =".$_SESSION['numbers'][$svar];
     $result=mysqli_query($dbcon,$ques_query);
 	
     if(mysqli_num_rows($result))
     {
 		$row = mysqli_fetch_assoc($result);
 		$_SESSION['ans']=$row['Answer'];
-	
+		echo $_SESSION['ans'];
+		
 	}
 ?>
 <html lang="en">
@@ -168,17 +191,67 @@ $ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$s
 			
 			<div class="row-fluid">	
 			
-				<div id="cardPile"> 
-				<?php 
+							<?php 
 				
-				$numbers=explode(",",$row['Question_Desc']);
 				
-				for($i=0;$i<count($numbers);$i++)
+				if($_SESSION['Question_Category']=="histogram")
 				{
-					echo "<div id=\"card".$numbers[$i]."\">".$numbers[$i]."</div>";
 					
 				}
-				?>
+				
+				elseif($_SESSION['Question_Category']=="probability")
+				{
+					echo "<div class=\"page-header\">
+							  <h1><small>Find the probability</small></h1>
+						  </div>";
+					echo "<div id=\"cardPile\">";
+					
+				}
+				elseif($_SESSION['Question_Category']=="mean")
+				{
+					echo "<div class=\"page-header\">
+							  <h1><small>Find the mean</small></h1>
+						  </div>";
+					echo"<div id=\"cardPile\">";
+						$numbers=explode(",",$row['QuestionDesc']);
+				
+					for($i=0;$i<count($numbers);$i++)
+					{
+						echo "<div id=\"card".$numbers[$i]."\">".$numbers[$i]."</div>";
+					
+					}
+				}
+				elseif($_SESSION['Question_Category']=="median")
+				{
+					echo "<div class=\"page-header\">
+							  <h1><small>Find the median</small></h1>
+						  </div>";
+					echo"<div id=\"cardPile\">";
+						$numbers=explode(",",$row['QuestionDesc']);
+				
+					for($i=0;$i<count($numbers);$i++)
+					{
+						echo "<div id=\"card".$numbers[$i]."\">".$numbers[$i]."</div>";
+					
+					}
+				}
+				elseif($_SESSION['Question_Category']=="mode")
+				{
+					echo "<div class=\"page-header\">
+							  <h1><small>Find the mode</small></h1>
+						  </div>";
+					echo"<div id=\"cardPile\">";
+						$numbers=explode(",",$row['QuestionDesc']);
+				
+					for($i=0;$i<count($numbers);$i++)
+					{
+						echo "<div id=\"card".$numbers[$i]."\">".$numbers[$i]."</div>";
+					
+					}
+				}
+				
+				
+			?>
 				
 				</div>
 				<hr>
@@ -186,23 +259,31 @@ $ques_query="select * from questions WHERE QuestionID =".$_SESSION['numbers'][$s
 								  <div class="control-group">
 								<div class="controls">
 								  <label class="radio">
-									<input type="radio" name="optionsRadios" id="optionsRadios1" value="option1">
-									Option one
+									<input type="radio" name="answer" id="optionsRadios1" value="<?php
+                            echo $row['Option1']; ?>">
+									<?php
+                            echo $row['Option1']; ?>
 								  </label>
 								  <div style="clear:both"></div>
 								  <label class="radio">
-									<input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-									Option two
+									<input type="radio" name="answer" id="optionsRadios2" value="<?php
+                            echo $row['Option2']; ?>">
+									<?php
+                            echo $row['Option2']; ?>
 								  </label>
 								   <div style="clear:both"></div>
 								  <label class="radio">
-									<input type="radio" name="optionsRadios" id="optionsRadios3" value="option3">
-									Option three
+									<input type="radio" name="answer" id="optionsRadios3" value="<?php
+                            echo $row['Option3']; ?>">
+									<?php
+                            echo $row['Option3']; ?>
 								  </label>
 								   <div style="clear:both"></div>
 								  <label class="radio">
-									<input type="radio" name="optionsRadios" id="optionsRadios4" value="option4">
-									Option four
+									<input type="radio" name="answer" id="optionsRadios4" value="<?php
+                            echo $row['Option4']; ?>">
+									<?php
+                            echo $row['Option4']; ?>
 								  </label>
 								</div>
 							  </div>

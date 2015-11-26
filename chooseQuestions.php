@@ -8,6 +8,10 @@ if(!$_SESSION['email'])
 	exit;
 }
 
+if(isset($_SESSION['ques_asked']))
+{
+	unset($_SESSION['ques_asked']);
+}
 
 $_SESSION['Question_Difficulty']=$_GET['difficulty'];
 ?>

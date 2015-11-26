@@ -7,6 +7,10 @@ if(!$_SESSION['email'])
     header('Location: index.php');//redirect to login page to secure the welcome page without login access.
 	exit;
 }
+if(isset($_SESSION['result_displayed']))
+{
+    unset($_SESSION['result_displayed']);
+}
 ?>
 <html lang="en">
 <head>
